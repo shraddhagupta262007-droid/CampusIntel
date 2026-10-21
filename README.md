@@ -57,6 +57,17 @@ If records are missing or no data appears:
 
 Changing the table search order does not create missing records. If your expected dataset has 163 companies but the connected source contains fewer, import or restore the missing records into the intended Supabase source first.
 
+## UI design
+
+CampusIntel uses a restrained brutalist visual style for a clear, professional placement dashboard:
+
+- **Palette:** deep navy (`#142B3D`), teal (`#176B63`), cool grey-blue surfaces, and white.
+- **Layout:** square corners, strong borders, clear table structure, and deliberate offset shadows.
+- **Interaction:** subtle transitions for hover, focus, and navigation states; no added decorative motion.
+- **Accessibility:** reduced-motion preferences are respected, and responsive layouts support smaller screens.
+
+The design is implemented in `src/styles.css`. Keep future UI changes consistent with this palette and interaction approach rather than introducing unrelated gradients, rounded-pill controls, or attention-grabbing animations.
+
 ## Features
 
 - Company directory with text search and industry filtering
