@@ -574,3 +574,37 @@ td{color:#5d6d80;border-color:#e9edf2}
  .panel{box-shadow:0 1px 2px rgba(27,45,64,.035)}
  .setup-modal{box-shadow:0 12px 32px rgba(21,42,60,.18)}
 }
+
+
+/* Restrained brutalist UI: hard edges, strong contrast, same professional palette */
+:root{--ink:#172b3d;--muted:#5d6d7d;--line:#b9c6d0;--surface:#ffffff}
+body{background:#f2f5f7;color:#172b3d}
+.sidebar{border-right:2px solid #172b3d}
+.topbar{border-bottom:2px solid #172b3d}
+.brand-mark,.avatar,.nav-item.active{border-radius:0}
+.nav-item.active{box-shadow:3px 3px 0 #9fb1bd}
+.welcome-row{border:2px solid #172b3d;box-shadow:5px 5px 0 #c4d0d8}
+.button,.icon-button,.search-box,.select-box,.connection-pill{border-radius:0}
+.button.primary{box-shadow:3px 3px 0 #9bbcb8}
+.button.primary:hover{box-shadow:2px 2px 0 #9bbcb8}
+.button.secondary{box-shadow:2px 2px 0 #d3dce2}
+.metrics-grid .metric-card,.content-grid .panel{border:2px solid #c4d0d8;border-radius:0;box-shadow:4px 4px 0 #dce3e8}
+.metric-card:hover,.panel:hover{border-color:#789b9d;box-shadow:4px 4px 0 #c3d9d6}
+.metric-icon,.company-logo,.health-icon,.quick-symbol,.step-number,.empty-illustration,.modal-icon{border-radius:0}
+.industry-tag,.health-badge,.open-row{border-radius:0}
+thead{background:#e8edf1}
+th{border-bottom:2px solid #b9c6d0}
+td{border-bottom:1px solid #dce3e8}
+.company-row:hover{background:#edf4f4}
+.table-footer{border-top:2px solid #c4d0d8}
+.notice{border:2px solid #c5d6d8;box-shadow:3px 3px 0 #e0e8eb}
+.notice-error{border-color:#e2c7c1}
+.setup-modal{border:2px solid #172b3d;border-radius:0;box-shadow:6px 6px 0 #b9cbd2}
+.profile-fields{border-radius:0}
+.search-box:focus-within,.select-box:focus-within{box-shadow:3px 3px 0 #d3e6e3}
+@media(max-width:700px){.welcome-row{box-shadow:3px 3px 0 #c4d0d8}.metrics-grid .metric-card,.content-grid .panel{box-shadow:2px 2px 0 #dce3e8}.setup-modal{box-shadow:4px 4px 0 #b9cbd2}}
+/* Subtle transitions only; no extra motion or decorative animations */
+.metric-card,.panel,.button,.icon-button,.nav-item,.company-row,.open-row,.industry-tag,.health-badge,.quick-panel,.notice,.company-logo,.notice-icon,.search-box,.select-box{transition:background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease!important}
+.metric-card:hover{transform:translateY(-1px)}
+.button:hover{transform:translateY(-1px)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
