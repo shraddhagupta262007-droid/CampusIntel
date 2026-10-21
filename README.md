@@ -1,39 +1,84 @@
 # CampusIntel — Placement Intelligence
 
-A React + Vite + TypeScript placement/company dashboard with Supabase client integration already wired in. It loads company records from your existing Supabase project; it does not seed fake companies into the database.
+CampusIntel is a React, Vite, and TypeScript dashboard for exploring placement-company records stored in Supabase. It includes search, industry filters, company profiles, connection diagnostics, and CSV export.
 
-## Only required configuration
+The dashboard reads from your configured Supabase database. It does not insert sample companies into your database or treat demo data as live records.
 
-1. Open the project folder.
+## Requirements
+
+- Node.js and npm
+- A Supabase project with company records and read access
+- A Supabase publishable key (or legacy anon key)
+
+## Local setup
+
+1. Clone the repository and open the project folder.
 2. Copy `.env.example` to `.env`.
-3. Paste your Supabase Project URL and **publishable/anon** key into `.env`:
+3. Set the Supabase URL and publishable/anon key:
 
-```env
-VITE_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
-VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY
-```
+   ```env
+   VITE_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+   VITE_SUPABASE_ANON_KEY=YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY
+   ```
 
-4. Install and run (first run only):
+4. Install dependencies and start the development server:
 
-```bash
-npm install
-npm run dev
-```
+   ```bash
+   npm install
+   npm run dev
+   ```
 
-To make a production build: `npm run build`.
+5. Create a production build when needed:
 
-## Database behavior
+   ```bash
+   npm run build
+   ```
 
-- The included client uses `@supabase/supabase-js` and reads from the first accessible table in this order: `companies`, `company_json`, `staging_company`.
-- Column names are normalized across common naming conventions such as `name`, `company_name`, `company_id`, `industry`, `sector`, `website`, `city`, and `location`.
-- Search, industry filtering, company detail view, raw-record inspection, CSV export, refresh, and connection diagnostics are included.
-- If no credentials are configured, the dashboard explicitly says setup is required and does not pretend that demo/sample rows are live data.
-- If the table is not accessible, check the actual table name, schema, and SELECT/RLS policy in Supabase. The frontend cannot bypass Row Level Security.
+## Supabase data sources
 
-## Security
+The app tries these sources in order and uses the first source that returns readable records:
 
-Never place a `service_role` / secret key in a browser app. Use the publishable key (or legacy anon key) with suitable RLS policies. `.env` is ignored by Git.
+1. `staging_company_directory_public` — preferred full placement directory
+2. `company_directory_public`
+3. `staging_company`
+4. `companies`
+5. `company_json`
+
+The current order is intentional: a smaller public view may contain fewer records than the staging directory. The dashboard cannot display records that are not present in the connected database or are not readable by the configured role.
+
+Company fields are normalized from common column names such as `name`, `company_name`, `industry`, `sector`, `website`, `city`, and `location`.
+
+If records are missing or no data appears:
+
+- Confirm `VITE_SUPABASE_URL` points to the intended Supabase project.
+- Check which table/view contains the expected records and compare its row count.
+- Confirm the configured key's role has `SELECT` permission and the table/view's Row Level Security (RLS) policies allow reads.
+- Use the dashboard's connection diagnostic message to identify the table/view or permission error.
+
+Changing the table search order does not create missing records. If your expected dataset has 163 companies but the connected source contains fewer, import or restore the missing records into the intended Supabase source first.
+
+## Features
+
+- Company directory with text search and industry filtering
+- Company profile details and raw database field inspection
+- CSV export of the filtered company list
+- Refresh and Supabase connection diagnostics
+- Explicit setup/error states when credentials or readable records are unavailable
 
 ## Deploying to Vercel
 
-Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` under Project Settings → Environment Variables, then redeploy.
+1. Import or connect this GitHub repository in Vercel.
+2. Open **Project Settings → Environment Variables**.
+3. Add these exact variable names (the `VITE_` prefix is required by the frontend):
+
+   - `VITE_SUPABASE_URL` — your Supabase project URL
+   - `VITE_SUPABASE_ANON_KEY` — your Supabase publishable key or legacy anon key
+
+4. Enable the variables for the **Production** environment (and **Preview** if you use preview deployments).
+5. Redeploy the latest deployment after adding or changing environment variables.
+
+Vite embeds `VITE_*` values at build time, so saving variables alone does not update an already-built deployment. Make sure the URL and key belong to the same Supabase project used for the intended company dataset.
+
+## Security
+
+Never place a Supabase `service_role` key or any secret key in frontend code or a `VITE_*` variable. Use a publishable/anon key with suitable RLS policies. Keep your local `.env` file out of Git; do not commit credentials.
