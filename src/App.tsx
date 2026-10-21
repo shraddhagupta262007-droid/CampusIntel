@@ -51,7 +51,7 @@ function App() {
 
   const exportCsv = () => {
     const rows = [['Company', 'Industry', 'Location', 'Website', 'Description'], ...visibleCompanies.map(c => [c.name, c.industry || '', c.location || '', c.website || '', c.description || ''])];
-    const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"', '""')}"`).join(',')).join('\n');
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'placement-companies.csv'; a.click(); URL.revokeObjectURL(url);
   };
