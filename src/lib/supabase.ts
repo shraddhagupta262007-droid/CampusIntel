@@ -86,11 +86,13 @@ const isMissingRelation = (message: string): boolean =>
 // Prefer the safe public views. The base tables are fallbacks only for projects
 // where a view is not yet installed and the user's RLS policy permits reading.
 const TABLE_CANDIDATES = [
-  'company_directory_public',
+  // The staging directory is the full placement dataset; prefer it over
+  // the smaller public directory view when both are readable.
   'staging_company_directory_public',
+  'company_directory_public',
+  'staging_company',
   'companies',
   'company_json',
-  'staging_company',
 ];
 
 export async function loadCompanies(): Promise<{
