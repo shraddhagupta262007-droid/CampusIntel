@@ -152,11 +152,11 @@ export async function testConnection(): Promise<{ ok: boolean; message: string }
   }
 
   const candidates = [
-    'company_directory_public',
     'staging_company_directory_public',
+    'company_directory_public',
+    'staging_company',
     'companies',
     'company_json',
-    'staging_company',
   ];
   const errors: string[] = [];
 
