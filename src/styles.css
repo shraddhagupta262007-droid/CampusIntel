@@ -608,3 +608,72 @@ td{border-bottom:1px solid #dce3e8}
 .metric-card:hover{transform:translateY(-1px)}
 .button:hover{transform:translateY(-1px)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+
+/* Stronger editorial brutalism: paper canvas, ink borders, restrained teal accent */
+:root{--ink:#142b3d;--muted:#5b6b7a;--line:#9eafbb;--surface:#fff;--accent:#176b63}
+body{background:#eef2f4;color:#142b3d}
+.sidebar{background:#e3e9ed;border-right:2px solid #142b3d}
+.topbar{background:#fff;border-bottom:2px solid #142b3d}
+.brand-mark{background:#176b63;color:#fff;border:2px solid #142b3d;box-shadow:3px 3px 0 #142b3d}
+.brand strong{font-weight:800;letter-spacing:-.04em}
+.nav-item{border:1px solid transparent}
+.nav-item.active{background:#142b3d;color:#fff;border:1px solid #142b3d;box-shadow:4px 4px 0 #a9bbc5}
+.nav-item.active:before{background:#56b6a7}
+.campus-card{background:#f8fafb;border:2px solid #9eafbb}
+.campus-icon{background:#d4e8e4;border:1px solid #176b63}
+.welcome-row{position:relative;background:#142b3d;color:#fff;border:2px solid #142b3d;box-shadow:7px 7px 0 #c0cdd4;padding:clamp(22px,3vw,34px)}
+.welcome-row:before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:#43a99b}
+.welcome-row:after{border:1px solid rgba(255,255,255,.12);border-radius:0;box-shadow:0 0 0 28px rgba(255,255,255,.025),0 0 0 58px rgba(255,255,255,.018)}
+.welcome-row .eyebrow{font-family:'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8dd5ca}
+.welcome-row h1{font-weight:800;letter-spacing:-.055em}
+.welcome-row .subtitle{color:#d0dce4}
+.button,.icon-button,.search-box,.select-box,.connection-pill,.profile-fields,.setup-modal{border-radius:0!important}
+.button{font-weight:700;border-width:2px}
+.button.primary{background:#176b63;color:#fff;border:2px solid #fff;box-shadow:4px 4px 0 #0b1e2b}
+.button.primary:hover{background:#238478;box-shadow:2px 2px 0 #0b1e2b}
+.button.secondary{background:#fff;color:#142b3d;border:2px solid #142b3d;box-shadow:3px 3px 0 #a9bbc5}
+.button.secondary:hover{background:#dcebe8;border-color:#142b3d}
+.icon-button{border:2px solid #a9b9c4}
+.metrics-grid .metric-card,.content-grid .panel{background:#fff;border:2px solid #142b3d;border-radius:0;box-shadow:5px 5px 0 #c9d4da}
+.metric-card{position:relative}
+.metric-card:before{content:"";position:absolute;top:-2px;left:-2px;width:38px;height:4px;background:#176b63}
+.metric-card:hover,.panel:hover{border-color:#176b63;box-shadow:5px 5px 0 #b6d8d2}
+.metric-top{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.035em;font-size:11px}
+.metric-value{font-weight:800;letter-spacing:-.045em}
+.metric-icon,.company-logo,.health-icon,.quick-symbol,.step-number,.empty-illustration,.modal-icon{border-radius:0;border:1px solid #a9c9c3}
+.metric-icon{background:#dcece9;color:#176b63}
+.panel-header{border-bottom:2px solid #d5dfe4}
+.panel-header h2,.quick-heading h2{font-weight:800;letter-spacing:-.035em}
+thead{background:#dfe7ec}
+th{font-family:'IBM Plex Mono',monospace;text-transform:uppercase;font-size:10px;letter-spacing:.07em;color:#405669;border-bottom:2px solid #142b3d}
+td{border-bottom:1px solid #dce3e8}
+.company-row:hover{background:#eaf4f2}
+.company-name-cell strong{font-weight:750;color:#142b3d}
+.company-logo{background:#dcece9;color:#176b63;border:1px solid #a9c9c3}
+.industry-tag,.health-badge,.open-row{border-radius:0;border-width:1px;font-family:'IBM Plex Mono',monospace;font-size:10px}
+.industry-tag{background:#e9eff2;border-color:#c5d1d8;color:#3d5668}
+.open-row{border:1px solid #176b63;color:#176b63;font-weight:700}
+.open-row:hover{background:#176b63;color:#fff}
+.notice{border:2px solid #176b63;border-left:7px solid #176b63;border-radius:0;box-shadow:4px 4px 0 #d2e1df}
+.notice-error{border-color:#a45d53;border-left-color:#a45d53}
+.table-footer{border-top:2px solid #142b3d}
+.quick-symbol,.step-number{background:#dcece9;color:#176b63;border:1px solid #176b63}
+.workflow-step{border-bottom:1px solid #d5dfe4}
+.setup-modal{border:2px solid #142b3d;box-shadow:8px 8px 0 #176b63}
+.setup-modal h2{font-weight:800;letter-spacing:-.04em}
+.security-note{border:2px solid #176b63;border-radius:0}
+.search-box:focus-within,.select-box:focus-within{border-color:#176b63;box-shadow:4px 4px 0 #cce3df}
+input,select,textarea{border-radius:0}
+.footer{font-family:'IBM Plex Mono',monospace}
+@media(max-width:700px){
+ .welcome-row{box-shadow:4px 4px 0 #c0cdd4}
+ .metrics-grid .metric-card,.content-grid .panel{box-shadow:3px 3px 0 #c9d4da}
+ .setup-modal{box-shadow:5px 5px 0 #176b63}
+}
+/* Transitions only: small, quick interactions; no new animations */
+.metric-card,.panel,.button,.icon-button,.nav-item,.company-row,.open-row,.industry-tag,.health-badge,.quick-panel,.notice,.company-logo,.notice-icon,.search-box,.select-box{
+ transition:background-color .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .16s ease!important
+}
+.metric-card:hover,.button:hover{transform:translateY(-1px)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
