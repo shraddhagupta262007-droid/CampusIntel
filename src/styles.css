@@ -324,3 +324,135 @@ td{font-size:12px;color:#363a31;border-bottom:1px solid #c9cabe;padding:13px}
  .setup-modal h2{font-size:22px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+
+/* Softer, low-glare palette: keep the brutalist structure, soften the colours */
+:root{
+  color:#26352d;
+  background:#f3f4ef;
+  --ink:#26352d;
+  --muted:#68736b;
+  --line:#d7ddd4;
+  --surface:#fbfcf8;
+  --green:#9fbea0;
+  --green-dark:#557e61;
+}
+body{background:#f3f4ef;color:#26352d}
+.sidebar{background:#dce8d7;color:#26352d;border-right:2px solid #c5d2c0}
+.brand-mark{background:#314b3b;color:#edf3e9;border-color:#314b3b}
+.brand strong{color:#26352d}
+.brand span,.workspace-label{color:#536556}
+.nav-item{color:#394b3d}
+.nav-item:hover{background:#edf2e9;border-color:#9aaf98;color:#26352d}
+.nav-item.active{background:#314b3b;color:#f7f8f1;border-color:#314b3b;box-shadow:3px 3px 0 #b9cbb4}
+.nav-count{background:#f4f6ef;color:#3c5140;border-color:#c4d0c0}
+.campus-card{background:#e7eee2;border-color:#b7c8b1}
+.campus-icon{background:#d1dfca;color:#314b3b}
+.campus-card strong,.user-row strong{color:#26352d}
+.campus-card span,.user-row span{color:#58695a}
+.user-row{border-color:#c1d0bc}
+.avatar{background:#314b3b;color:#f4f6ef}
+.topbar{background:#fbfcf8;border-color:#d7ddd4}
+.breadcrumbs{color:#737e75}.breadcrumbs strong{color:#26352d}
+.connection-pill{background:#fbfcf8;border-color:#d0d9ce;color:#56665a}
+.icon-button{background:#fbfcf8;border-color:#cbd5c8;color:#536456}
+.icon-button:hover{background:#e5ece0}
+.welcome-row{background:#dce8d7;border-color:#aebfa8;box-shadow:5px 5px 0 #c7d4c1}
+.welcome-row:after{border-color:rgba(56,83,61,.13);box-shadow:0 0 0 34px rgba(56,83,61,.025),0 0 0 72px rgba(56,83,61,.02)}
+.welcome-row:before{background:rgba(56,83,61,.035)}
+.welcome-row .eyebrow{color:#4e6b51}
+.welcome-row h1{color:#263b2d}
+.welcome-row .subtitle{color:#536657}
+.welcome-row>.button.secondary{background:#fbfcf8;border-color:#9caf98;color:#314b3b;box-shadow:2px 2px 0 #b8c9b2}
+.welcome-row>.button.secondary:hover{background:#edf2e9;color:#26352d}
+.button{border-color:#b8c7b4}
+.button.primary{background:#496e53;color:#fff;border-color:#496e53}
+.button.primary:hover{background:#3c5e46}
+.button.secondary{background:#fbfcf8;color:#405345;border-color:#c7d2c3}
+.button.secondary:hover{background:#e9efe5;border-color:#9db29a}
+.notice{background:#edf3e9;border-color:#c8d7c2;box-shadow:3px 3px 0 #dce3d7}
+.notice-error{background:#f6eeea;border-color:#e1cbc1}
+.notice-icon,.notice-error .notice-icon{background:#dce8d7;color:#3e6647;border-color:#b7c9b0}
+.notice-copy strong{color:#314b38}.notice-copy p{color:#5f6f62}
+.notice-action{color:#42664a}
+.metrics-grid{gap:15px}
+.metric-card{background:#fbfcf8;border-color:#d0d9cc;box-shadow:3px 3px 0 #e0e5db}
+.metric-card:hover{border-color:#9fb59b;box-shadow:5px 5px 0 #cdd9c7}
+.metric-top{color:#5b6a5e}
+.metric-icon{background:#e4ece0;color:#4d7354;border-color:#c5d5bf}
+.metric-value{color:#263b2d}
+.metric-note{color:#68776b}
+.panel{background:#fbfcf8;border-color:#d0d9cc;box-shadow:3px 3px 0 #e0e5db}
+.panel:hover{border-color:#b5c8af}
+.panel-header h2,.quick-heading h2{color:#2b4031}
+.panel-header p,.quick-heading p{color:#737e73}
+.search-box,.select-box{border-color:#cbd5c8;background:#fbfcf8}
+.search-box input{color:#293c2f}.search-box input::placeholder{color:#879187}
+.search-box:focus-within,.select-box:focus-within{border-color:#86a687;box-shadow:0 0 0 3px #e6eee1}
+.select-box select{background:#fbfcf8;color:#45584a}
+thead{background:#edf0e8}
+th{color:#536254;border-color:#d6ded2}
+td{color:#59675b;border-color:#e5e9e1}
+.company-row:hover{background:#f0f4ed}
+.company-name-cell strong{color:#2b4031}
+.company-name-cell span{color:#7a857a}
+.company-logo{background:#e2ebdd;color:#436b4b;border-color:#c3d3bd}
+.logo-1,.logo-2,.logo-3,.logo-4,.logo-5{background:#edf1e8;color:#526b54;border-color:#d1dbca}
+.industry-tag{background:#eef1e9;border-color:#d5ddd0;color:#526253}
+.location-cell{color:#5b6a5e}
+.open-row{background:#fbfcf8;border-color:#d0d9cc;color:#526456}
+.open-row:hover{background:#e4ece0;color:#314b38}
+.table-footer{background:#f0f3ec;border-color:#dce3d8;color:#68756a}
+.table-footer strong{color:#405345}
+.empty-state>strong{color:#314b38}.empty-state p{color:#68776b}
+.empty-illustration{background:#e4ece0;border-color:#c4d4be;color:#4e7355}
+.health-icon{background:#e4ece0;border-color:#c4d4be;color:#4e7355}
+.health-status{background:#f0f4ec;border-color:#d6e0d1}
+.health-status strong{color:#354d39}.health-status span{color:#748074}
+.health-big-dot{background:#c5a66d;box-shadow:0 0 0 4px #f0e9dc}
+.health-big-dot.connected{background:#6f9d78;box-shadow:0 0 0 4px #e1ece0}
+.health-big-dot.error{background:#bb8272;box-shadow:0 0 0 4px #f3e5df}
+.health-badge{border-color:#cbd7c5}
+.health-badge.ok{background:#e3ede0;color:#41694a}
+.health-badge.pending{background:#f2eee2;color:#826f4a}
+.quick-symbol,.step-number{background:#e4ece0;border-color:#c4d4be;color:#4e7355}
+.workflow-step{border-color:#e3e8df}
+.workflow-step strong{color:#354a38}.workflow-step span{color:#6e7b70}
+.quick-foot{color:#55765a}
+.footer{color:#7c867b}
+.modal-backdrop{background:rgba(31,43,33,.55)}
+.setup-modal{background:#fbfcf8;border-color:#cbd7c6;box-shadow:5px 5px 0 #dce8d7}
+.modal-icon{background:#e4ece0;border-color:#c4d4be;color:#4e7355}
+.setup-modal h2{color:#2b4031}
+.modal-subtitle{color:#657266}
+.setup-list li{border-color:#e3e8df}
+.setup-list li>span{background:#e4ece0;border-color:#c4d4be;color:#42674a}
+.setup-list strong{color:#354a38}.setup-list p{color:#68766a}
+.setup-list code,.security-note code{background:#eef2e9;border-color:#d3ddce;color:#405e45}
+.security-note{background:#f0f4ec;border-color:#d2ddcc;color:#4e7355}
+.security-note p{color:#5f6e61}.security-note strong{color:#354f3a}
+.profile-fields{border-color:#d1dbcc}
+.profile-field{border-color:#e3e8df}
+.profile-field>span{color:#737f73}.profile-field strong{color:#354a38}
+.raw-details{color:#5e6d60}.raw-details pre{background:#f0f4ec;border-color:#d1dbcc}
+.text-button{color:#875d50}
+
+/* Calm, consistent transitions: no dramatic motion */
+:root{scroll-behavior:smooth}
+.app-shell,.sidebar,.topbar,.page-content>.welcome-row,.page-content>.notice,
+.metrics-grid .metric-card,.content-grid>.panel,.content-grid>.right-column{
+ animation-duration:.35s!important;
+}
+.metric-card,.panel,.button,.icon-button,.nav-item,.company-row,.open-row,
+.industry-tag,.health-badge,.quick-panel,.notice,.company-logo,.notice-icon{
+ transition:background-color .2s ease,color .2s ease,border-color .2s ease,
+ box-shadow .2s ease,transform .2s ease!important;
+}
+.metric-card:hover{transform:translateY(-2px)}
+.button:hover{transform:translateY(-1px);box-shadow:2px 3px 0 #d8e1d2}
+.nav-item:after{background:rgba(49,75,59,.05)}
+.company-row:hover .company-logo{transform:scale(1.03)}
+.notice:hover .notice-icon{transform:scale(1.03)}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
