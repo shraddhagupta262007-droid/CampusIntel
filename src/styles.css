@@ -456,3 +456,121 @@ td{color:#59675b;border-color:#e5e9e1}
 @media(prefers-reduced-motion:reduce){
  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+
+/* Professional product palette: navy, cool neutrals, restrained teal */
+:root{
+  color:#202b3c;
+  background:#f4f6f9;
+  --ink:#202b3c;
+  --muted:#667386;
+  --line:#dce2ea;
+  --surface:#ffffff;
+  --green:#d9ebe7;
+  --green-dark:#176b63;
+}
+body{background:#f4f6f9;color:#202b3c}
+.sidebar{background:#f8fafc;color:#263449;border-right:1px solid #dce2ea}
+.brand-mark{background:#173b52;color:#fff;border:1px solid #173b52}
+.brand strong{color:#1e3044}
+.brand span,.workspace-label{color:#728095}
+.nav-item{color:#4a5b70;border-color:transparent}
+.nav-item:hover{background:#edf3f6;border-color:#d7e3e8;color:#183b50}
+.nav-item.active{background:#173b52;color:#fff;border-color:#173b52;box-shadow:none}
+.nav-count{background:#edf2f6;color:#526579;border:1px solid #dce3eb}
+.campus-card{background:#eef4f6;border-color:#d8e4e8}
+.campus-icon{background:#dcebe9;color:#176b63}
+.campus-card strong,.user-row strong{color:#263449}
+.campus-card span,.user-row span{color:#728095}
+.user-row{border-color:#dce2ea}
+.avatar{background:#dcebe9;color:#176b63}
+.topbar{background:#fff;border-color:#dce2ea}
+.breadcrumbs{color:#788598}.breadcrumbs strong{color:#27384c}
+.connection-pill{background:#f8fafc;border-color:#dce2ea;color:#53677b}
+.icon-button{background:#fff;border-color:#dce2ea;color:#53677b}
+.icon-button:hover{background:#edf3f6;border-color:#c5d5de}
+.welcome-row{background:#173b52;border:1px solid #173b52;box-shadow:none}
+.welcome-row:after{border-color:rgba(255,255,255,.08);box-shadow:0 0 0 34px rgba(255,255,255,.025),0 0 0 72px rgba(255,255,255,.018)}
+.welcome-row:before{background:rgba(255,255,255,.025)}
+.welcome-row .eyebrow{color:#a8d8d0}
+.welcome-row h1{color:#fff}
+.welcome-row .subtitle{color:#d0dce5}
+.welcome-row>.button.secondary{background:#fff;border-color:#fff;color:#173b52;box-shadow:none}
+.welcome-row>.button.secondary:hover{background:#eaf2f4;color:#173b52}
+.button{border-color:#d1dbe5}
+.button.primary{background:#176b63;color:#fff;border-color:#176b63}
+.button.primary:hover{background:#12574f}
+.button.secondary{background:#fff;color:#34485e;border-color:#d5dee8}
+.button.secondary:hover{background:#f0f5f7;border-color:#bdcdd8}
+.notice{background:#edf5f4;border-color:#d1e5e1;box-shadow:none}
+.notice-error{background:#fbf0ee;border-color:#efd6d1}
+.notice-icon,.notice-error .notice-icon{background:#dcebe9;color:#176b63;border-color:#c8dfda}
+.notice-copy strong{color:#263d4f}.notice-copy p{color:#637487}
+.notice-action{color:#176b63}
+.metrics-grid{gap:15px}
+.metric-card{background:#fff;border:1px solid #dce2ea;box-shadow:0 1px 2px rgba(27,45,64,.035)}
+.metric-card:hover{border-color:#b6d2cf;box-shadow:0 5px 14px rgba(27,45,64,.07)}
+.metric-top{color:#68778b}
+.metric-icon{background:#e8f2f1;color:#176b63;border:1px solid #d7e8e5}
+.metric-value{color:#202f43}
+.metric-note{color:#778498}
+.panel{background:#fff;border:1px solid #dce2ea;box-shadow:0 1px 2px rgba(27,45,64,.035)}
+.panel:hover{border-color:#cbd8e2}
+.panel-header h2,.quick-heading h2{color:#26384c}
+.panel-header p,.quick-heading p{color:#788598}
+.search-box,.select-box{border-color:#d6dfe8;background:#fff}
+.search-box input{color:#26384c}.search-box input::placeholder{color:#9aa5b3}
+.search-box:focus-within,.select-box:focus-within{border-color:#6ea9a1;box-shadow:0 0 0 3px #e4f1ef}
+.select-box select{background:#fff;color:#45586d}
+thead{background:#f3f6f9}
+th{color:#68778b;border-color:#e1e7ed}
+td{color:#5d6d80;border-color:#e9edf2}
+.company-row:hover{background:#f5f8fa}
+.company-name-cell strong{color:#26384c}
+.company-name-cell span{color:#8390a0}
+.company-logo{background:#e7f1f0;color:#176b63;border-color:#d5e6e3}
+.logo-1,.logo-2,.logo-3,.logo-4,.logo-5{background:#edf3f6;color:#526b7d;border-color:#dce5eb}
+.industry-tag{background:#f0f4f7;border-color:#dce4eb;color:#53677b}
+.location-cell{color:#627287}
+.open-row{background:#fff;border-color:#dce2ea;color:#52677b}
+.open-row:hover{background:#edf5f4;color:#176b63}
+.table-footer{background:#f7f9fb;border-color:#e2e8ee;color:#728095}
+.table-footer strong{color:#45586d}
+.empty-state>strong{color:#263d4f}.empty-state p{color:#728095}
+.empty-illustration{background:#e8f2f1;border-color:#d5e6e3;color:#176b63}
+.health-icon{background:#e8f2f1;border-color:#d5e6e3;color:#176b63}
+.health-status{background:#f5f8fa;border-color:#e0e7ed}
+.health-status strong{color:#34495e}.health-status span{color:#7a8797}
+.health-big-dot{background:#c49a55;box-shadow:0 0 0 4px #f5eee1}
+.health-big-dot.connected{background:#32917f;box-shadow:0 0 0 4px #e0f0ec}
+.health-big-dot.error{background:#c66e65;box-shadow:0 0 0 4px #fae9e6}
+.health-badge{border-color:#dce4eb}
+.health-badge.ok{background:#e5f2ef;color:#176b63}
+.health-badge.pending{background:#f6f0e4;color:#876a35}
+.quick-symbol,.step-number{background:#e8f2f1;border-color:#d5e6e3;color:#176b63}
+.workflow-step{border-color:#e6ebf0}
+.workflow-step strong{color:#34495e}.workflow-step span{color:#728095}
+.quick-foot{color:#477b73}
+.footer{color:#8793a2}
+.modal-backdrop{background:rgba(19,35,50,.58)}
+.setup-modal{background:#fff;border-color:#dce2ea;box-shadow:0 16px 48px rgba(21,42,60,.18)}
+.modal-icon{background:#e8f2f1;border-color:#d5e6e3;color:#176b63}
+.setup-modal h2{color:#26384c}
+.modal-subtitle{color:#66768a}
+.setup-list li{border-color:#e6ebf0}
+.setup-list li>span{background:#e8f2f1;border-color:#d5e6e3;color:#176b63}
+.setup-list strong{color:#34495e}.setup-list p{color:#6b7a8d}
+.setup-list code,.security-note code{background:#f0f4f7;border-color:#dce4eb;color:#35576b}
+.security-note{background:#f2f7f6;border-color:#d6e7e3;color:#176b63}
+.security-note p{color:#5e7181}.security-note strong{color:#23495a}
+.profile-fields{border-color:#dce4eb}
+.profile-field{border-color:#e6ebf0}
+.profile-field>span{color:#788598}.profile-field strong{color:#34495e}
+.raw-details{color:#5e6e81}.raw-details pre{background:#f5f8fa;border-color:#dce4eb}
+.text-button{color:#176b63}
+@media(max-width:700px){
+ .welcome-row{box-shadow:none}
+ .metric-card{box-shadow:0 1px 2px rgba(27,45,64,.035)}
+ .panel{box-shadow:0 1px 2px rgba(27,45,64,.035)}
+ .setup-modal{box-shadow:0 12px 32px rgba(21,42,60,.18)}
+}
