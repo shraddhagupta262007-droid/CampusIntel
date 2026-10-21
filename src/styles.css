@@ -137,3 +137,50 @@ th:first-child,td:first-child{padding-left:19px}td{padding:12px 13px;border-bott
  .welcome-row>.button svg{width:15px;height:15px}
  .welcome-row:after{right:-125px;top:-135px}
 }
+
+
+/* Motion polish: subtle, purposeful transitions with reduced-motion support */
+:root{scroll-behavior:smooth}
+.app-shell{animation:ci-page-in .55s cubic-bezier(.2,.75,.25,1) both}
+.sidebar{animation:ci-sidebar-in .5s cubic-bezier(.2,.75,.25,1) both}
+.topbar{animation:ci-topbar-in .45s ease-out both}
+.page-content>.welcome-row{animation:ci-rise-in .55s .05s cubic-bezier(.2,.75,.25,1) both}
+.page-content>.notice{animation:ci-rise-in .5s .11s cubic-bezier(.2,.75,.25,1) both}
+.metrics-grid .metric-card{animation:ci-rise-in .48s cubic-bezier(.2,.75,.25,1) both}
+.metrics-grid .metric-card:nth-child(1){animation-delay:.10s}
+.metrics-grid .metric-card:nth-child(2){animation-delay:.16s}
+.metrics-grid .metric-card:nth-child(3){animation-delay:.22s}
+.metrics-grid .metric-card:nth-child(4){animation-delay:.28s}
+.content-grid>.panel,.content-grid>.right-column{animation:ci-rise-in .55s .2s cubic-bezier(.2,.75,.25,1) both}
+.right-column>.panel:nth-child(2){animation-delay:.27s}
+.metric-card,.panel,.button,.icon-button,.nav-item,.company-row,.open-row,.industry-tag,.health-badge,.quick-panel,.notice{
+ transition:transform .22s cubic-bezier(.2,.75,.25,1),box-shadow .22s ease,border-color .22s ease,background-color .22s ease,color .18s ease
+}
+.metric-card:hover{transform:translateY(-3px);box-shadow:0 9px 22px rgba(20,58,37,.08)}
+.panel:hover{border-color:#d8e4da}
+.button{transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease,border-color .18s ease}
+.button:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(18,72,46,.09)}
+.button:active,.icon-button:active,.open-row:active{transform:scale(.97)}
+.icon-button:hover{transform:translateY(-1px)}
+.nav-item{position:relative;overflow:hidden}
+.nav-item:after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.045);transform:translateX(-105%);transition:transform .28s ease}
+.nav-item:hover:after{transform:translateX(0)}
+.company-row{transition:background-color .16s ease}
+.company-name-cell .company-logo{transition:transform .2s ease,background-color .2s ease}
+.company-row:hover .company-logo{transform:scale(1.07)}
+.search-box:focus-within,.select-box:focus-within{transition:box-shadow .2s ease,border-color .2s ease}
+.setup-modal{animation:ci-modal-in .28s cubic-bezier(.2,.75,.25,1) both}
+.modal-backdrop{animation:ci-backdrop-in .18s ease-out both}
+.notice-icon{transition:transform .25s ease}
+.notice:hover .notice-icon{transform:rotate(-4deg) scale(1.04)}
+@keyframes ci-page-in{from{opacity:0}to{opacity:1}}
+@keyframes ci-sidebar-in{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+@keyframes ci-topbar-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ci-rise-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes ci-modal-in{from{opacity:0;transform:translateY(9px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes ci-backdrop-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){
+ :root{scroll-behavior:auto}
+ .app-shell,.sidebar,.topbar,.page-content>.welcome-row,.page-content>.notice,.metrics-grid .metric-card,.content-grid>.panel,.content-grid>.right-column,.setup-modal,.modal-backdrop{animation:none!important}
+ *,*::before,*::after{transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
