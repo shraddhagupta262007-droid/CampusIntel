@@ -82,7 +82,7 @@ function App() {
         </section>}
 
         <section className={`content-grid ${activeNav === 'Companies' ? 'companies-view' : ''}`}>
-          {activeNav === 'Companies' && <div className="companies-intro"><div className="eyebrow"><Building2 size={14}/> PLACEMENT DIRECTORY</div><h2>All companies</h2><p>Search, filter, and open individual company profiles. Showing records loaded from your connected database.</p></div>
+          {activeNav === 'Companies' && <div className="companies-intro"><div className="eyebrow"><Building2 size={14}/> PLACEMENT DIRECTORY</div><h2>All companies</h2><p>Search, filter, and open individual company profiles. Showing records loaded from your connected database.</p></div>}
           <div className="panel company-panel"><div className="panel-header"><div><h2>Company directory</h2><p>Browse the companies available to your placement team.</p></div><button className="button secondary compact" onClick={exportCsv} disabled={!visibleCompanies.length}><Download size={15}/> Export CSV</button></div>
             <div className="table-tools"><label className="search-box"><Search size={17}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search companies, sectors, locations…"/></label><label className="select-box"><Filter size={15}/><select value={industry} onChange={e => setIndustry(e.target.value)}>{industries.map(i => <option key={i}>{i}</option>)}</select></label></div>
             <div className="table-wrap"><table><thead><tr><th>COMPANY</th><th>INDUSTRY</th><th>LOCATION</th><th>PROFILE</th></tr></thead><tbody>
