@@ -205,9 +205,9 @@ export type CompanySkillRecord = {
 export async function loadCompanySkills(): Promise<{ skills: CompanySkillRecord[]; error: string | null }> {
   if (!supabase) return { skills: [], error: 'Supabase credentials are not configured.' };
   const { data, error } = await supabase
-    .from('staging_company_skill_levels')
+    .from('company_skill_profiles_public')
     .select('id,companies,coding,data_structures_and_algorithms,object_oriented_programming_and_design,aptitude_and_problem_solving,communication_skills,ai_native_engineering,devops_and_cloud,sql_and_design,software_engineering,system_design_and_architecture,computer_networking,operating_system')
     .order('companies', { ascending: true });
-  if (error) return { skills: [], error: error.message };
+  if (error) return { skills: [], error: `Could not load company skill profiles: ${error.message}` };
   return { skills: (data ?? []) as CompanySkillRecord[], error: null };
 }
