@@ -183,3 +183,31 @@ export async function testConnection(): Promise<{ ok: boolean; message: string }
     message: `No candidate table/view is accessible. ${errors.join(' | ')}`,
   };
 }
+
+
+export type CompanySkillRecord = {
+  id: number;
+  companies: string;
+  coding?: string;
+  data_structures_and_algorithms?: string;
+  object_oriented_programming_and_design?: string;
+  aptitude_and_problem_solving?: string;
+  communication_skills?: string;
+  ai_native_engineering?: string;
+  devops_and_cloud?: string;
+  sql_and_design?: string;
+  software_engineering?: string;
+  system_design_and_architecture?: string;
+  computer_networking?: string;
+  operating_system?: string;
+};
+
+export async function loadCompanySkills(): Promise<{ skills: CompanySkillRecord[]; error: string | null }> {
+  if (!supabase) return { skills: [], error: 'Supabase credentials are not configured.' };
+  const { data, error } = await supabase
+    .from('staging_company_skill_levels')
+    .select('id,companies,coding,data_structures_and_algorithms,object_oriented_programming_and_design,aptitude_and_problem_solving,communication_skills,ai_native_engineering,devops_and_cloud,sql_and_design,software_engineering,system_design_and_architecture,computer_networking,operating_system')
+    .order('companies', { ascending: true });
+  if (error) return { skills: [], error: error.message };
+  return { skills: (data ?? []) as CompanySkillRecord[], error: null };
+}
