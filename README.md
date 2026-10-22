@@ -1,8 +1,8 @@
 # CampusIntel — Placement Intelligence
 
-CampusIntel is a React, Vite, and TypeScript dashboard for exploring placement-company records stored in Supabase. It includes search, industry filters, company profiles, connection diagnostics, and CSV export.
+CampusIntel is a React, Vite, and TypeScript placement workspace. It includes a company directory, employer research shortlist, recorded skill profiles, Supabase diagnostics, CSV exports, and a browser-local application tracker.
 
-The dashboard reads from your configured Supabase database. It does not insert sample companies into your database or treat demo data as live records.
+Company and skill information is read from the configured Supabase project. The application tracker stores entries in this browser's local storage only; those entries are not written to Supabase or synced across devices. The app does not insert sample companies into the database or present demo records as live data. The company directory is not an authenticated or private workspace, so do not enter sensitive personal information into tracker notes.
 
 ## Requirements
 
@@ -36,15 +36,17 @@ The dashboard reads from your configured Supabase database. It does not insert s
 
 ## Supabase data sources
 
-The app tries these sources in order and uses the first source that returns readable records:
+The company directory tries these sources in order and uses the first source that returns readable records:
 
-1. `staging_company_directory_public` — preferred full placement directory
+1. `staging_company_directory_public`
 2. `company_directory_public`
 3. `staging_company`
 4. `companies`
 5. `company_json`
 
-The current order is intentional: a smaller public view may contain fewer records than the staging directory. The dashboard cannot display records that are not present in the connected database or are not readable by the configured role.
+Skill Intelligence reads from `company_skill_profiles_public`, a read-only view that selects only the skill fields needed by the browser app. The underlying `staging_company_skill_levels` table is not directly readable by the public app roles. Duplicate company names in the source skill records remain visible as separately identified records; the app does not silently merge potentially conflicting values.
+
+The dashboard cannot display records that are not present in the connected database or are not readable by the configured role.
 
 Company fields are normalized from common column names such as `name`, `company_name`, `industry`, `sector`, `website`, `city`, and `location`.
 
@@ -70,11 +72,14 @@ The design is implemented in `src/styles.css`. Keep future UI changes consistent
 
 ## Features
 
-- Company directory with text search and industry filtering
-- Company profile details and raw database field inspection
-- CSV export of the filtered company list
-- Refresh and Supabase connection diagnostics
-- Explicit setup/error states when credentials or readable records are unavailable
+- Company directory with search, industry filtering, company profiles, and CSV export
+- Employer research shortlist
+- Skill Intelligence with search, source-record disambiguation for duplicate company names, and a note that the dataset's rating scale is not documented
+- Read-only skill data through the restricted `company_skill_profiles_public` view
+- Placement tracker for company, role, stage, application date, follow-up date, job link, next action, and notes
+- Application tracker data saved in browser local storage and exportable as CSV; it is not synced or backed up by Supabase
+- Supabase connection diagnostics and explicit setup/error states
+- CSV cells are escaped to reduce spreadsheet formula-injection risk
 
 ## Deploying to Vercel
 
