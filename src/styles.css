@@ -862,3 +862,11 @@ input,select,textarea{border-radius:0}
 .skills-empty p{font-size:11px;line-height:1.6;max-width:450px;margin:0}
 @media(max-width:950px){.skills-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.skills-plan-steps{grid-template-columns:minmax(0,1fr)}.skills-plan-steps>div{border-right:0;border-bottom:1px solid #dce3e8}.skills-plan-steps>div:last-child{border-bottom:0}}
 @media(max-width:700px){.skills-hero{padding:21px 18px;box-shadow:3px 3px 0 #c9d4da}.skills-hero-mark{display:none}.skills-stat-grid{gap:7px}.skills-stat{padding:12px 10px;box-shadow:2px 2px 0 #c9d4da}.skills-stat>span{font-size:8px;line-height:1.5}.skills-stat>strong{font-size:21px}.skills-stat>strong.skills-source{font-size:15px}.skills-stat small{font-size:9px}.skills-tools .search-box,.skills-tools .select-box{min-width:100%;flex-basis:100%}.skills-content{padding:12px}.skills-grid{grid-template-columns:minmax(0,1fr)}.skills-selected-head{align-items:flex-start;flex-wrap:wrap;padding:12px}.skills-count{margin-left:59px}.skill-card-top{min-height:0}.skills-plan-title{padding:13px}}
+
+
+/* Make the company picker visibly interactive and usable */
+.skills-company-select{position:relative;display:flex;align-items:center;gap:8px;border:1px solid #b8c8d1;background:#fff;padding:0 10px;min-height:42px}
+.skills-company-select select{display:block;flex:1;min-width:0;width:100%;min-height:40px;border:0;outline:none;background:transparent;color:#142b3d;font:12px inherit;cursor:pointer}
+.skills-company-select:focus-within{outline:2px solid #43a99b;outline-offset:2px}
+.skills-company-select select:disabled{cursor:not-allowed;color:#71808c}
+.skills-tools .search-box input{min-width:0}
