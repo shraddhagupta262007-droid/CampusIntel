@@ -77,12 +77,11 @@ function readApplications(value: unknown): ApplicationRecord[] {
   return value.filter((entry): entry is ApplicationRecord => {
     if (!entry || typeof entry !== 'object') return false;
     const item = entry as Partial<ApplicationRecord>;
-    return (
-      typeof item.id === 'string' &&
-      typeof item.company === 'string' &&
-      typeof item.role === 'string' &&
-      isApplicationStage(item.stage)
-    );
+    const stringFields: (keyof ApplicationRecord)[] = [
+      'id', 'company', 'role', 'dateApplied', 'followUpDate', 'jobUrl',
+      'nextAction', 'notes', 'createdAt', 'updatedAt',
+    ];
+    return stringFields.every((key) => typeof item[key] === 'string') && isApplicationStage(item.stage);
   });
 }
 
@@ -163,7 +162,6 @@ export default function PlacementTracker({ companyNames = [] }: { companyNames?:
   const followUpCount = applications.filter(
     (item) => Boolean(item.followUpDate) && !closedStages.includes(item.stage)
   ).length;
-  const offerCount = applications.filter((item) => item.stage === 'Offer').length;
 
   const resetForm = () => {
     setDraft(emptyDraft());
@@ -283,7 +281,7 @@ export default function PlacementTracker({ companyNames = [] }: { companyNames?:
         <div className="tracker-stat"><span>TRACKED ROLES</span><strong>{applications.length}</strong><small>Applications and saved opportunities</small></div>
         <div className="tracker-stat"><span>ACTIVE</span><strong>{activeCount}</strong><small>Not yet closed</small></div>
         <div className="tracker-stat"><span>ASSESSMENTS / INTERVIEWS</span><strong>{interviewCount}</strong><small>Current stage is assessment or interview</small></div>
-        <div className="tracker-stat"><span>OFFERS</span><strong>{offerCount}</strong><small>Marked as offer received</small></div>
+        <div className="tracker-stat"><span>FOLLOW-UPS SCHEDULED</span><strong>{followUpCount}</strong><small>Active roles with a follow-up date</small></div>
       </div>
 
       <div className="tracker-workspace">
