@@ -874,7 +874,7 @@ input,select,textarea{border-radius:0}
 
 /* Placement tracker: practical pipeline, with browser-local storage clearly labelled */
 .placement-tracker{display:flex;flex-direction:column;gap:17px;margin-bottom:24px;min-width:0}
-.tracker-hero{display:flex;justify-content:space-between;align-items:center;gap:22px;padding:26px 28px;background:#dcece9;color:#142b3d;border:3px solid #142b3d;box-shadow:7px 7px 0 #142b3d;position:relative;overflow:hidden}
+.tracker-hero{display:flex;justify-content:space-between;align-items:center;gap:22px;padding:26px 28px;background:#142b3d;color:#fff;border:2px solid #142b3d;box-shadow:7px 7px 0 #c0cdd4;position:relative;overflow:hidden}
 .tracker-hero-copy{max-width:690px}
 .tracker-hero .eyebrow{display:flex;align-items:center;gap:7px;color:#83d1c3;font:700 10px 'IBM Plex Mono',monospace;letter-spacing:1.2px;margin-bottom:11px}
 .tracker-hero h2{font:700 clamp(25px,3vw,34px)/1.1 'Space Grotesk',sans-serif;letter-spacing:-1.15px;margin:0 0 10px;color:#fff}
@@ -893,7 +893,7 @@ input,select,textarea{border-radius:0}
 .tracker-form-panel,.tracker-list-panel{min-width:0}
 .tracker-form{display:flex;flex-direction:column;gap:13px;padding:0 18px 19px}
 .tracker-field{display:flex;flex-direction:column;gap:6px;min-width:0}
-.tracker-field>span{font-size:11px;font-weight:700;color:#34382f}
+.tracker-field>span{font-size:11px;font-weight:700;color:#142b3d}
 .tracker-field>span b{color:#8a392b}
 .tracker-field input,.tracker-field select,.tracker-field textarea{width:100%;min-width:0;background:#fff;border:2px solid #bfc1b5;color:#142b3d;padding:10px 11px;border-radius:0;font:12px 'DM Sans',sans-serif}
 .tracker-field input,.tracker-field select{min-height:40px}
@@ -903,8 +903,8 @@ input,select,textarea{border-radius:0}
 .tracker-form-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .tracker-form-actions{display:flex;flex-wrap:wrap;gap:9px;padding-top:3px}
 .tracker-form-message{font-size:11px;line-height:1.5;padding:9px 11px;margin:0;border:1px solid #142b3d}
-.tracker-form-error{background:#f7e7e4;color:#8a392b}
-.tracker-form-success{background:#dcece9;color:#176b63}
+.tracker-form-error{background:#f7e7e4;color:#8a392b;border-color:#d9b5af}
+.tracker-form-success{background:#dcece9;color:#176b63;border-color:#9bcac1}
 .tracker-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .tracker-filters{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 18px 16px;border-bottom:2px solid #142b3d}
 .tracker-filters .search-box{flex:1;min-width:180px}
