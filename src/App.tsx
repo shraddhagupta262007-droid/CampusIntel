@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Activity, ArrowDownRight, ArrowUpRight, Building2, Check, ChevronDown, CircleHelp, Command, Database, Download, ExternalLink, FileSearch, Filter, GraduationCap, LayoutDashboard, LoaderCircle, MapPin, RefreshCw, Search, Settings2, ShieldCheck, Sparkles, Wifi, WifiOff } from 'lucide-react';
+import { Activity, ArrowDownRight, ArrowUpRight, Building2, Check, CheckCircle2, ChevronDown, CircleHelp, Command, Database, Download, ExternalLink, FileSearch, Filter, Globe, GraduationCap, LayoutDashboard, LoaderCircle, MapPin, RefreshCw, Search, Settings2, ShieldCheck, Sparkles, Target, TrendingUp, Wifi, WifiOff } from 'lucide-react';
 import { isSupabaseConfigured, loadCompanies, testConnection, type Company } from './lib/supabase';
 
 const demoCompanies: Company[] = [
@@ -22,6 +22,9 @@ function App() {
   const [activeNav, setActiveNav] = useState('Overview');
   const [selected, setSelected] = useState<Company | null>(null);
   const [showSetup, setShowSetup] = useState(false);
+  const [shortlist, setShortlist] = useState<string[]>([]);
+  const [researchSearch, setResearchSearch] = useState('');
+  const [researchIndustry, setResearchIndustry] = useState('All industries');
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -74,14 +77,48 @@ function App() {
 
         {activeNav !== 'Companies' && connection !== 'connected' && <div className={`notice ${connection === 'error' ? 'notice-error' : ''}`}><div className="notice-icon">{connection === 'error' ? <WifiOff size={19}/> : <Database size={19}/>}</div><div className="notice-copy"><strong>{connection === 'error' ? 'Could not load Supabase data' : 'Connect your Supabase project'}</strong><p>{dbError || 'Checking connection…'} {connection === 'demo' ? 'The company list remains empty until you connect your database, so demo content is never confused with real records.' : ''}</p>{connection === 'error' && <button className="text-button" onClick={() => setShowSetup(true)}>Troubleshoot connection <ExternalLink size={13}/></button>}</div><button className="notice-action" onClick={() => setShowSetup(true)}>View setup <span>→</span></button></div>}
 
-        {activeNav !== 'Companies' && <section className="metrics-grid">
+        {activeNav === 'Research' && <section className="research-desk">
+          <div className="research-hero">
+            <div className="research-hero-copy"><div className="eyebrow"><Target size={14}/> EMPLOYER RESEARCH WORKSPACE</div><h2>Turn company data into a placement plan.</h2><p>Find relevant employers, build a shortlist, and open company profiles to review the details available in your database.</p></div>
+            <div className="research-hero-mark"><TrendingUp size={31}/><span>RESEARCH DESK</span></div>
+          </div>
+          <div className="research-stat-grid">
+            <div className="research-stat"><span>AVAILABLE EMPLOYERS</span><strong>{loading ? '—' : companies.length}</strong><small>Records from your connected source</small></div>
+            <div className="research-stat"><span>SHORTLISTED</span><strong>{shortlist.length}</strong><small>Employers saved in this session</small></div>
+            <div className="research-stat"><span>INDUSTRIES</span><strong>{new Set(companies.map(c => c.industry).filter(Boolean)).size}</strong><small>Distinct industry labels</small></div>
+          </div>
+          <div className="research-workspace">
+            <div className="panel research-results">
+              <div className="panel-header"><div><h2>Explore employers</h2><p>Search the actual company records and shortlist useful targets.</p></div><span className="research-live"><span/> {connection === 'connected' ? 'LIVE DATA' : 'DATA STATUS'}</span></div>
+              <div className="table-tools research-tools"><label className="search-box"><Search size={17}/><input value={researchSearch} onChange={e => setResearchSearch(e.target.value)} placeholder="Search name, industry, location…"/></label><label className="select-box"><Filter size={15}/><select value={researchIndustry} onChange={e => setResearchIndustry(e.target.value)}>{industries.map(i => <option key={i}>{i}</option>)}</select></label></div>
+              <div className="research-company-list">
+                {loading && <div className="research-empty"><LoaderCircle className="spin" size={22}/><strong>Loading employer records</strong><p>Reading company data from your connected source.</p></div>}
+                {!loading && companies.filter(c => { const term = researchSearch.toLowerCase().trim(); return (!term || [c.name,c.industry,c.location,c.description].some(v => String(v ?? '').toLowerCase().includes(term))) && (researchIndustry === 'All industries' || c.industry === researchIndustry); }).map((c,i) => {
+                  const key = String(c.id ?? c.name);
+                  const saved = shortlist.includes(key);
+                  return <article className="research-company" key={key + '-' + i}><div className={`company-logo logo-${i % 6}`}>{c.name.slice(0,1).toUpperCase()}</div><div className="research-company-main"><strong>{c.name}</strong><div className="research-company-meta"><span>{c.industry || 'Industry not specified'}</span><span><MapPin size={12}/>{c.location || 'Location not specified'}</span></div><p>{c.description || 'No company description is available in this record yet.'}</p></div><div className="research-company-actions"><button className={`button ${saved ? 'primary' : 'secondary'} compact`} onClick={() => setShortlist(current => saved ? current.filter(v => v !== key) : [...current,key])}>{saved ? <><Check size={14}/> Shortlisted</> : <><Target size={14}/> Shortlist</>}</button><button className="research-open-link" onClick={() => setSelected(c)}>View profile <ExternalLink size={13}/></button></div></article>;
+                })}
+                {!loading && companies.filter(c => { const term = researchSearch.toLowerCase().trim(); return (!term || [c.name,c.industry,c.location,c.description].some(v => String(v ?? '').toLowerCase().includes(term))) && (researchIndustry === 'All industries' || c.industry === researchIndustry); }).length === 0 && <div className="research-empty"><div className="empty-illustration"><FileSearch size={23}/></div><strong>{companies.length ? 'No employers match your filters' : 'No employer records available'}</strong><p>{companies.length ? 'Try a different search or choose All industries.' : connection === 'connected' ? 'The connected source returned no company records. Check the selected source table and permissions.' : 'Connect the Supabase project and confirm table read permissions to start researching real employers.'}</p>{!companies.length && <button className="button secondary compact" onClick={() => setShowSetup(true)}><Settings2 size={14}/> Check data connection</button>}</div>}
+              </div>
+            </div>
+            <aside className="research-side">
+              <div className="panel shortlist-panel"><div className="panel-header"><div><h2>Your shortlist</h2><p>Employers to investigate further</p></div><div className="quick-symbol"><CheckCircle2 size={17}/></div></div>
+                {shortlist.length ? <div className="shortlist-items">{companies.filter(c => shortlist.includes(String(c.id ?? c.name))).map(c => <div className="shortlist-item" key={String(c.id ?? c.name)}><span className="shortlist-dot"/><div><strong>{c.name}</strong><span>{c.industry || 'Industry not specified'}</span></div><button aria-label={`Remove ${c.name} from shortlist`} onClick={() => setShortlist(current => current.filter(v => v !== String(c.id ?? c.name)))}>×</button></div>)}</div> : <div className="shortlist-empty"><Target size={22}/><strong>Your research list starts here</strong><p>Use “Shortlist” on an employer card. Your selected targets will appear here while this page is open.</p></div>}
+                <div className="shortlist-foot"><span>{shortlist.length} selected</span><button disabled={!shortlist.length} onClick={() => setShortlist([])}>Clear list</button></div>
+              </div>
+              <div className="panel research-guide"><div className="quick-heading"><div className="quick-symbol"><Sparkles size={17}/></div><div><h2>Suggested workflow</h2><p>A practical way to use this desk</p></div></div><div className="research-step"><span>01</span><div><strong>Filter by industry</strong><p>Start with sectors related to your target roles.</p></div></div><div className="research-step"><span>02</span><div><strong>Review company profiles</strong><p>Check available location, website and description fields.</p></div></div><div className="research-step"><span>03</span><div><strong>Build a focused shortlist</strong><p>Keep promising employers together for follow-up research.</p></div></div><button className="button secondary full" onClick={() => setActiveNav('Companies')}><Building2 size={15}/> Open full company directory</button></div>
+            </aside>
+          </div>
+        </section>}
+
+        {activeNav !== 'Companies' && activeNav !== 'Research' && <section className="metrics-grid">
           <Metric label="Companies in database" value={loading ? '—' : companies.length.toLocaleString()} note={source ? `Loaded from ${source}` : 'Live database records'} icon={<Building2 size={19}/>} trend="database" />
           <Metric label="Industries represented" value={loading ? '—' : new Set(companies.map(c => c.industry).filter(v => v && v !== 'Not specified')).size.toString()} note="Distinct industry labels" icon={<Activity size={19}/>} trend="neutral" />
           <Metric label="Records with website" value={loading ? '—' : companies.filter(c => c.website).length.toLocaleString()} note="Company profiles with links" icon={<ExternalLink size={19}/>} trend="neutral" />
           <Metric label="Data connection" value={connection === 'connected' ? 'Healthy' : connection === 'checking' ? 'Checking' : connection === 'demo' ? 'Pending' : 'Needs review'} note={connection === 'connected' ? 'Supabase query succeeded' : 'Check URL, key and table access'} icon={<ShieldCheck size={19}/>} trend={connection === 'connected' ? 'good' : 'neutral'} />
         </section>}
 
-        <section className={`content-grid ${activeNav === 'Companies' ? 'companies-view' : ''}`}>
+        <section className={`content-grid ${activeNav === 'Companies' ? 'companies-view' : ''}`} style={activeNav === 'Research' ? { display: 'none' } : undefined}>
           {activeNav === 'Companies' && <div className="companies-intro"><div className="eyebrow"><Building2 size={14}/> PLACEMENT DIRECTORY</div><h2>All companies</h2><p>Search, filter, and open individual company profiles. Showing records loaded from your connected database.</p></div>}
           <div className="panel company-panel"><div className="panel-header"><div><h2>Company directory</h2><p>Browse the companies available to your placement team.</p></div><button className="button secondary compact" onClick={exportCsv} disabled={!visibleCompanies.length}><Download size={15}/> Export CSV</button></div>
             <div className="table-tools"><label className="search-box"><Search size={17}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search companies, sectors, locations…"/></label><label className="select-box"><Filter size={15}/><select value={industry} onChange={e => setIndustry(e.target.value)}>{industries.map(i => <option key={i}>{i}</option>)}</select></label></div>
