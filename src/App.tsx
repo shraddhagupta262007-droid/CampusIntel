@@ -128,7 +128,7 @@ function App() {
       if (/^[\\s]*[=+@\\-\\t\\r]/.test(text)) text = `'${text}`;
       return `"${text.replace(/"/g, '""')}"`;
     };
-    const csv = rows.map(row => row.map(safeCell).join(',')).join('\\r\\n');
+    const csv = rows.map(row => row.map(safeCell).join(',')).join('\r\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
@@ -210,7 +210,7 @@ function App() {
               const skillFields: [string, keyof CompanySkillRecord][] = [['Coding','coding'],['Data Structures & Algorithms','data_structures_and_algorithms'],['OOP & Design','object_oriented_programming_and_design'],['Aptitude & Problem Solving','aptitude_and_problem_solving'],['Communication','communication_skills'],['AI-native Engineering','ai_native_engineering'],['DevOps & Cloud','devops_and_cloud'],['SQL & Database Design','sql_and_design'],['Software Engineering','software_engineering'],['System Design','system_design_and_architecture'],['Computer Networking','computer_networking'],['Operating Systems','operating_system']];
               const valueFor = (r: CompanySkillRecord, key: keyof CompanySkillRecord) => String(r[key] ?? 'Not specified');
               return <div className="skills-content">
-                <div className="skills-selected-head"><div className="skills-company-mark">{chosen.companies.slice(0,1).toUpperCase()}</div><div><span>SELECTED COMPANY</span><h3>{chosen.companies}</h3><p>Recorded values from the database · source record #${chosen.id}</p></div><span className="skills-count">{filtered.length} profiles match</span></div>
+                <div className="skills-selected-head"><div className="skills-company-mark">{chosen.companies.slice(0,1).toUpperCase()}</div><div><span>SELECTED COMPANY</span><h3>{chosen.companies}</h3><p>Recorded values from the database · source record #{chosen.id}</p></div><span className="skills-count">{filtered.length} profiles match</span></div>
                 <div className="skills-grid">{skillFields.map(([label,key]) => { const raw = valueFor(chosen,key); const has = raw !== 'Not specified' && raw !== ''; return <div className="skill-card" key={key}><div className="skill-card-top"><span>{label}</span><strong>{has ? raw : 'Not specified'}</strong></div><p className="skill-source-note">{has ? 'Source value shown as stored. Rating scale is not documented.' : 'No rating recorded in the source.'}</p></div>})}</div>
                 <div className="skills-plan"><div className="skills-plan-title"><div className="quick-symbol"><Target size={17}/></div><div><h3>How to use this profile</h3><p>Convert the recorded indicators into preparation steps.</p></div></div><div className="skills-plan-steps"><div><span>01</span><section><strong>Build core foundations</strong><p>Prioritise coding, DSA, OOP, aptitude and communication for broad placement readiness.</p></section></div><div><span>02</span><section><strong>Follow the role-specific stack</strong><p>Use SQL, cloud, AI or system design indicators to guide projects for your target role.</p></section></div><div><span>03</span><section><strong>Validate against job descriptions</strong><p>Confirm these database indicators against current official job postings; the scale is not a published company hiring rubric.</p></section></div></div></div>
               </div>;
