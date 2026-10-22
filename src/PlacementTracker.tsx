@@ -243,7 +243,7 @@ export default function PlacementTracker({ companyNames = [] }: { companyNames?:
 
   const exportApplications = () => {
     const header = ['Company', 'Role', 'Stage', 'Date Applied', 'Follow-up Date', 'Job Link', 'Next Action', 'Notes'];
-    const rows = applications.map((item) => [
+    const rows = filteredApplications.map((item) => [
       item.company, item.role, item.stage, item.dateApplied, item.followUpDate,
       item.jobUrl, item.nextAction, item.notes,
     ]);
@@ -281,7 +281,7 @@ export default function PlacementTracker({ companyNames = [] }: { companyNames?:
         <div className="tracker-stat"><span>TRACKED ROLES</span><strong>{applications.length}</strong><small>Applications and saved opportunities</small></div>
         <div className="tracker-stat"><span>ACTIVE</span><strong>{activeCount}</strong><small>Not yet closed</small></div>
         <div className="tracker-stat"><span>ASSESSMENTS / INTERVIEWS</span><strong>{interviewCount}</strong><small>Current stage is assessment or interview</small></div>
-        <div className="tracker-stat"><span>FOLLOW-UPS SCHEDULED</span><strong>{followUpCount}</strong><small>Active roles with a follow-up date</small></div>
+        <div className="tracker-stat"><span>FOLLOW-UP DATES SET</span><strong>{followUpCount}</strong><small>Active roles with a follow-up date</small></div>
       </div>
 
       <div className="tracker-workspace">
@@ -344,7 +344,7 @@ export default function PlacementTracker({ companyNames = [] }: { companyNames?:
         <div className="panel tracker-list-panel">
           <div className="panel-header tracker-list-heading">
             <div><h2>Your opportunities</h2><p>{applications.length} saved record{applications.length === 1 ? '' : 's'} on this device.</p></div>
-            <button className="button secondary compact" type="button" onClick={exportApplications} disabled={!applications.length}><Download size={14} /> Export CSV</button>
+            <button className="button secondary compact" type="button" onClick={exportApplications} disabled={!filteredApplications.length}><Download size={14} /> Export CSV</button>
           </div>
           <div className="tracker-filters">
             <label className="search-box"><Search size={16} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search company, role, or next action" aria-label="Search tracked opportunities" /></label>
