@@ -677,3 +677,16 @@ input,select,textarea{border-radius:0}
 }
 .metric-card:hover,.button:hover{transform:translateY(-1px)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+
+/* Dedicated Companies page: make the navigation change obvious and focus on the directory */
+.content-grid.companies-view{grid-template-columns:minmax(0,1fr);gap:16px}
+.companies-intro{grid-column:1/-1;background:#fff;border:2px solid #142b3d;box-shadow:5px 5px 0 #c9d4da;padding:22px 24px;position:relative}
+.companies-intro:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:#43a99b}
+.companies-intro .eyebrow{margin:0 0 8px 0;color:#176b63}
+.companies-intro h2{margin:0;color:#142b3d;font-family:Manrope,sans-serif;font-size:24px;letter-spacing:-.04em}
+.companies-intro p{margin:7px 0 0;color:#627287;font-size:12px;line-height:1.6;max-width:650px}
+.companies-view .company-panel{width:100%}
+.companies-view .company-panel .panel-header{padding-top:20px}
+.companies-view .table-wrap{min-height:190px}
+@media(max-width:700px){.companies-intro{padding:18px 16px;box-shadow:3px 3px 0 #c9d4da}.companies-intro h2{font-size:21px}.companies-intro p{font-size:11px}}
