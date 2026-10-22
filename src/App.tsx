@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Activity, ArrowDownRight, ArrowUpRight, Building2, Check, CheckCircle2, ChevronDown, CircleHelp, Command, Database, Download, ExternalLink, FileSearch, Filter, Globe, GraduationCap, LayoutDashboard, LoaderCircle, MapPin, RefreshCw, Search, Settings2, ShieldCheck, Sparkles, Target, TrendingUp, Wifi, WifiOff, Table2, Server, KeyRound, CircleCheck, CircleAlert, BrainCircuit, BookOpen, Code2 } from 'lucide-react';
+import { Activity, ArrowDownRight, ArrowUpRight, Building2, Check, CheckCircle2, ChevronDown, CircleHelp, Database, Download, ExternalLink, FileSearch, Filter, Globe, GraduationCap, LayoutDashboard, LoaderCircle, MapPin, RefreshCw, Search, Settings2, ShieldCheck, Sparkles, Target, TrendingUp, Wifi, WifiOff, Table2, Server, KeyRound, CircleCheck, CircleAlert, BrainCircuit, BookOpen, Code2 } from 'lucide-react';
 import { isSupabaseConfigured, loadCompanies, loadCompanySkills, testConnection, type Company, type CompanySkillRecord } from './lib/supabase';
 
 const demoCompanies: Company[] = [
@@ -105,18 +105,18 @@ function App() {
 
   return <div className="app-shell">
     <aside className="sidebar">
-      <div className="brand"><div className="brand-mark"><Command size={20}/></div><div><strong>CampusIntel</strong><span>PLACEMENT INTELLIGENCE</span></div></div>
+      <div className="brand"><div className="brand-mark" role="img" aria-label="CampusIntel campus logo" title="CampusIntel"><GraduationCap size={20}/></div><div><strong>CampusIntel</strong><span>PLACEMENT INTELLIGENCE</span></div></div>
       <div className="workspace-label">WORKSPACE</div>
       <button className={`nav-item ${activeNav === 'Overview' ? 'active' : ''}`} onClick={() => setActiveNav('Overview')}><LayoutDashboard size={18}/> Overview</button>
       <button className={`nav-item ${activeNav === 'Companies' ? 'active' : ''}`} onClick={() => setActiveNav('Companies')}><Building2 size={18}/> Companies <span className="nav-count">{companies.length}</span></button>
       <button className={`nav-item ${activeNav === 'Research' ? 'active' : ''}`} onClick={() => setActiveNav('Research')}><FileSearch size={18}/> Research desk</button>
       <button className={`nav-item ${activeNav === 'Data sources' ? 'active' : ''}`} onClick={() => setActiveNav('Data sources')}><Database size={18}/> Data sources</button>
       <button className={`nav-item ${activeNav === 'Skills intelligence' ? 'active' : ''}`} onClick={() => setActiveNav('Skills intelligence')}><BrainCircuit size={18}/> Skills intelligence</button>
-      <div className="sidebar-bottom"><div className="campus-card"><div className="campus-icon"><GraduationCap size={19}/></div><div><strong>JSS University</strong><span>Placement cell workspace</span></div><ChevronDown size={15}/></div><button className="nav-item" onClick={() => setShowSetup(true)}><Settings2 size={18}/> Setup & connection</button><div className="user-row"><div className="avatar">JI</div><div><strong>Placement Intelligence</strong><span>Student workspace</span></div><CircleHelp size={17}/></div></div>
+      <div className="sidebar-bottom"><div className="campus-card"><div className="campus-icon"><GraduationCap size={19}/></div><div><strong>JSS University</strong><span>Placement cell workspace</span></div><ChevronDown size={15}/></div><button className="nav-item" onClick={() => setShowSetup(true)}><Settings2 size={18}/> Setup & connection</button><div className="user-row"><div className="avatar campus-logo" role="img" aria-label="CampusIntel campus logo" title="CampusIntel"><GraduationCap size={16}/></div><div><strong>Placement Intelligence</strong><span>Student workspace</span></div><CircleHelp size={17}/></div></div>
     </aside>
 
     <main className="main-area">
-      <header className="topbar"><div className="breadcrumbs">Workspace <span>/</span> <strong>{activeNav}</strong></div><div className="top-actions"><div className={`connection-pill ${connection}`}><span className="status-dot"/>{connection === 'connected' ? 'Supabase connected' : connection === 'demo' ? 'Setup required' : connection === 'error' ? 'Connection issue' : 'Connecting'}</div><button className="icon-button" aria-label="Refresh data" onClick={() => void refresh()}><RefreshCw size={17}/></button><div className="avatar top-avatar">JI</div></div></header>
+      <header className="topbar"><div className="breadcrumbs">Workspace <span>/</span> <strong>{activeNav}</strong></div><div className="top-actions"><div className={`connection-pill ${connection}`}><span className="status-dot"/>{connection === 'connected' ? 'Supabase connected' : connection === 'demo' ? 'Setup required' : connection === 'error' ? 'Connection issue' : 'Connecting'}</div><button className="icon-button" aria-label="Refresh data" onClick={() => void refresh()}><RefreshCw size={17}/></button><div className="avatar top-avatar campus-logo" role="img" aria-label="CampusIntel campus logo" title="CampusIntel"><GraduationCap size={18}/></div></div></header>
       <div className="page-content">
         <div className="welcome-row"><div><div className="eyebrow"><Sparkles size={14}/> CAMPUS RECRUITMENT INTELLIGENCE</div><h1>{activeNav === 'Overview' ? 'Placement overview' : activeNav}</h1><p className="subtitle">A clearer view of company research, hiring targets, and campus opportunities.</p></div><button className="button secondary" onClick={() => setShowSetup(true)}><Settings2 size={16}/> Configure data</button></div>
 
