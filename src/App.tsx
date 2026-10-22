@@ -1,15 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Activity, ArrowDownRight, ArrowUpRight, Building2, Check, CheckCircle2, ChevronDown, CircleHelp, Database, Download, ExternalLink, FileSearch, Filter, Globe, GraduationCap, LayoutDashboard, LoaderCircle, MapPin, RefreshCw, Search, Settings2, ShieldCheck, Sparkles, Target, TrendingUp, Wifi, WifiOff, Table2, Server, KeyRound, CircleCheck, CircleAlert, BrainCircuit, BookOpen, Code2 } from 'lucide-react';
-import { isSupabaseConfigured, loadCompanies, loadCompanySkills, testConnection, type Company, type CompanySkillRecord } from './lib/supabase';
-
-const demoCompanies: Company[] = [
-  { id: 1, name: 'Accenture', industry: 'IT Services & Consulting', location: 'Bengaluru, India', website: 'https://www.accenture.com', description: 'Technology services, consulting and digital transformation.' },
-  { id: 2, name: 'Microsoft', industry: 'Software & Cloud', location: 'Hyderabad, India', website: 'https://www.microsoft.com', description: 'Cloud computing, enterprise software and AI.' },
-  { id: 3, name: 'Deloitte', industry: 'Consulting', location: 'Gurugram, India', website: 'https://www.deloitte.com', description: 'Consulting, risk advisory, audit and technology.' },
-  { id: 4, name: 'Adobe', industry: 'Software', location: 'Noida, India', website: 'https://www.adobe.com', description: 'Digital media, creative software and digital experience.' },
-  { id: 5, name: 'Amazon', industry: 'Technology & E-commerce', location: 'Bengaluru, India', website: 'https://www.amazon.jobs', description: 'E-commerce, cloud infrastructure and consumer technology.' },
-  { id: 6, name: 'TCS', industry: 'IT Services', location: 'Noida, India', website: 'https://www.tcs.com', description: 'IT services, consulting and business solutions.' },
-];
+import PlacementTracker from './PlacementTracker';
+import { Activity, ArrowDownRight, ArrowUpRight, Building2, Check, CheckCircle2, ChevronDown, CircleHelp, Database, Download, ClipboardList, ExternalLink, FileSearch, Filter, GraduationCap, LayoutDashboard, LoaderCircle, MapPin, RefreshCw, Search, Settings2, ShieldCheck, Sparkles, Target, TrendingUp, WifiOff, Table2, Server, KeyRound, CircleCheck, CircleAlert, BrainCircuit, BookOpen,  } from 'lucide-react';
+import { isSupabaseConfigured, loadCompanies, loadCompanySkills, type Company, type CompanySkillRecord } from './lib/supabase';
 
 function App() {
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -34,17 +26,35 @@ function App() {
   const refresh = useCallback(async () => {
     setLoading(true);
     if (!isSupabaseConfigured) {
-      setCompanies([]); setConnection('demo'); setSource(null);
-      setDbError('Credentials not set. Demo preview is shown; no database data is being presented as live.');
-      setLoading(false); return;
+      setCompanies([]);
+      setConnection('demo');
+      setSource(null);
+      setDbError('Supabase credentials are not configured for this deployment.');
+      setLoading(false);
+      return;
     }
-    const result = await loadCompanies();
-    if (result.error) {
-      setCompanies([]); setConnection('error'); setDbError(result.error); setSource(result.source);
-    } else {
-      setCompanies(result.companies); setSource(result.source); setDbError(null); setConnection('connected');
+
+    try {
+      const result = await loadCompanies();
+      if (result.error) {
+        setCompanies([]);
+        setConnection('error');
+        setDbError(result.error);
+        setSource(result.source);
+      } else {
+        setCompanies(result.companies);
+        setSource(result.source);
+        setDbError(null);
+        setConnection('connected');
+      }
+    } catch (error) {
+      setCompanies([]);
+      setConnection('error');
+      setSource(null);
+      setDbError(error instanceof Error ? error.message : 'The database request failed. Check the connection and retry.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => { void refresh(); }, [refresh]);
@@ -64,6 +74,21 @@ function App() {
     }
   }, []);
   useEffect(() => { if (activeNav === 'Skills intelligence') void refreshSkills(); }, [activeNav, refreshSkills]);
+
+  const skillNameCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    skillRecords.forEach(record => {
+      const name = record.companies.trim();
+      counts.set(name, (counts.get(name) || 0) + 1);
+    });
+    return counts;
+  }, [skillRecords]);
+
+  const uniqueSkillCompanyCount = useMemo(
+    () => new Set(skillRecords.map(record => record.companies.trim().toLowerCase()).filter(Boolean)).size,
+    [skillRecords]
+  );
+  const duplicateSkillRecordCount = Math.max(0, skillRecords.length - uniqueSkillCompanyCount);
 
   const visibleSkillRecords = useMemo(() => {
     const term = skillsSearch.trim().toLowerCase();
@@ -98,9 +123,19 @@ function App() {
 
   const exportCsv = () => {
     const rows = [['Company', 'Industry', 'Location', 'Website', 'Description'], ...visibleCompanies.map(c => [c.name, c.industry || '', c.location || '', c.website || '', c.description || ''])];
-    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'placement-companies.csv'; a.click(); URL.revokeObjectURL(url);
+    const safeCell = (value: unknown) => {
+      let text = String(value ?? '');
+      if (/^[\\s]*[=+@\\-\\t\\r]/.test(text)) text = `'${text}`;
+      return `"${text.replace(/"/g, '""')}"`;
+    };
+    const csv = rows.map(row => row.map(safeCell).join(',')).join('\\r\\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'placement-companies.csv';
+    anchor.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
 
   return <div className="app-shell">
@@ -112,6 +147,7 @@ function App() {
       <button className={`nav-item ${activeNav === 'Research' ? 'active' : ''}`} onClick={() => setActiveNav('Research')}><FileSearch size={18}/> Research desk</button>
       <button className={`nav-item ${activeNav === 'Data sources' ? 'active' : ''}`} onClick={() => setActiveNav('Data sources')}><Database size={18}/> Data sources</button>
       <button className={`nav-item ${activeNav === 'Skills intelligence' ? 'active' : ''}`} onClick={() => setActiveNav('Skills intelligence')}><BrainCircuit size={18}/> Skills intelligence</button>
+      <button className={`nav-item ${activeNav === 'Placement tracker' ? 'active' : ''}`} onClick={() => setActiveNav('Placement tracker')}><ClipboardList size={18}/> Placement tracker</button>
       <div className="sidebar-bottom"><div className="campus-card"><div className="campus-icon"><GraduationCap size={19}/></div><div><strong>JSS University</strong><span>Placement cell workspace</span></div><ChevronDown size={15}/></div><button className="nav-item" onClick={() => setShowSetup(true)}><Settings2 size={18}/> Setup & connection</button><div className="user-row"><div className="avatar campus-logo" role="img" aria-label="CampusIntel campus logo" title="CampusIntel"><GraduationCap size={16}/></div><div><strong>Placement Intelligence</strong><span>Student workspace</span></div><CircleHelp size={17}/></div></div>
     </aside>
 
@@ -120,8 +156,10 @@ function App() {
       <div className="page-content">
         <div className="welcome-row"><div><div className="eyebrow"><Sparkles size={14}/> CAMPUS RECRUITMENT INTELLIGENCE</div><h1>{activeNav === 'Overview' ? 'Placement overview' : activeNav}</h1><p className="subtitle">A clearer view of company research, hiring targets, and campus opportunities.</p></div><button className="button secondary" onClick={() => setShowSetup(true)}><Settings2 size={16}/> Configure data</button></div>
 
-        {activeNav !== 'Companies' && connection !== 'connected' && <div className={`notice ${connection === 'error' ? 'notice-error' : ''}`}><div className="notice-icon">{connection === 'error' ? <WifiOff size={19}/> : <Database size={19}/>}</div><div className="notice-copy"><strong>{connection === 'error' ? 'Could not load Supabase data' : 'Connect your Supabase project'}</strong><p>{dbError || 'Checking connection…'} {connection === 'demo' ? 'The company list remains empty until you connect your database, so demo content is never confused with real records.' : ''}</p>{connection === 'error' && <button className="text-button" onClick={() => setShowSetup(true)}>Troubleshoot connection <ExternalLink size={13}/></button>}</div><button className="notice-action" onClick={() => setShowSetup(true)}>View setup <span>→</span></button></div>}
+        {activeNav !== 'Companies' && activeNav !== 'Placement tracker' && connection !== 'connected' && <div className={`notice ${connection === 'error' ? 'notice-error' : ''}`}><div className="notice-icon">{connection === 'error' ? <WifiOff size={19}/> : <Database size={19}/>}</div><div className="notice-copy"><strong>{connection === 'error' ? 'Could not load Supabase data' : 'Connect your Supabase project'}</strong><p>{dbError || 'Checking connection…'} {connection === 'demo' ? 'The company list remains empty until you connect your database, so demo content is never confused with real records.' : ''}</p>{connection === 'error' && <button className="text-button" onClick={() => setShowSetup(true)}>Troubleshoot connection <ExternalLink size={13}/></button>}</div><button className="notice-action" onClick={() => setShowSetup(true)}>View setup <span>→</span></button></div>}
 
+
+        {activeNav === 'Placement tracker' && <PlacementTracker companyNames={companies.map(company => company.name)} />}
 
         {activeNav === 'Data sources' && <section className="sources-desk">
           <div className="sources-hero"><div className="sources-hero-copy"><div className="eyebrow"><Database size={14}/> DATA CONNECTIONS & QUALITY</div><h2>Know where your placement data comes from.</h2><p>Review connection status, company records available to CampusIntel, and checks to keep data reliable.</p></div><div className="sources-hero-mark"><Server size={30}/><span>SOURCE CONTROL</span></div></div>
@@ -139,7 +177,7 @@ function App() {
               <div className="source-panel-actions"><button className="button primary" onClick={() => setShowSetup(true)}><Settings2 size={15}/> Connection settings</button><button className="button secondary" onClick={() => void refresh()}><RefreshCw size={15}/> Refresh source</button></div>
             </div>
             <div className="panel source-quality-panel"><div className="panel-header"><div><h2>Data quality checks</h2><p>Based on currently loaded company rows</p></div><ShieldCheck size={19}/></div>
-              <div className="quality-summary"><strong>{loading ? '—' : companies.length ? Math.round((companies.filter(c => Boolean(c.name && c.name.trim())).length + companies.filter(c => Boolean(c.website && c.website.trim())).length + companies.filter(c => Boolean(c.industry && c.industry.trim())).length) / (companies.length * 3) * 100) : 0}%</strong><span>field completeness indicator</span></div>
+              <div className="quality-summary"><strong>{loading ? '—' : companies.length ? `${Math.round((companies.filter(c => Boolean(c.name && c.name.trim())).length + companies.filter(c => Boolean(c.website && c.website.trim())).length + companies.filter(c => Boolean(c.industry && c.industry.trim())).length) / (companies.length * 3) * 100)}%` : 'N/A'}</strong><span>field completeness indicator</span></div>
               <div className="quality-row"><div><span>Company names</span><small>{loading ? 'Checking…' : companies.filter(c => Boolean(c.name && c.name.trim())).length + ' of ' + companies.length + ' have a name'}</small></div><span className={'quality-pill ' + (!loading && companies.length && companies.every(c => Boolean(c.name && c.name.trim())) ? 'ok' : 'pending')}>{loading ? 'Checking' : companies.length && companies.every(c => Boolean(c.name && c.name.trim())) ? 'Complete' : 'Review'}</span></div>
               <div className="quality-row"><div><span>Industry labels</span><small>{loading ? 'Checking…' : companies.filter(c => Boolean(c.industry && c.industry.trim())).length + ' of ' + companies.length + ' specified'}</small></div><span className={'quality-pill ' + (!loading && companies.length && companies.every(c => Boolean(c.industry && c.industry.trim())) ? 'ok' : 'pending')}>{loading ? 'Checking' : companies.length && companies.every(c => Boolean(c.industry && c.industry.trim())) ? 'Complete' : 'Review'}</span></div>
               <div className="quality-row"><div><span>Website links</span><small>{loading ? 'Checking…' : companies.filter(c => Boolean(c.website && c.website.trim())).length + ' of ' + companies.length + ' specified'}</small></div><span className={'quality-pill ' + (!loading && companies.length && companies.every(c => Boolean(c.website && c.website.trim())) ? 'ok' : 'pending')}>{loading ? 'Checking' : companies.length && companies.every(c => Boolean(c.website && c.website.trim())) ? 'Complete' : 'Review'}</span></div>
@@ -156,25 +194,24 @@ function App() {
         {activeNav === 'Skills intelligence' && <section className="skills-desk">
           <div className="skills-hero"><div className="skills-hero-copy"><div className="eyebrow"><BrainCircuit size={14}/> ROLE READINESS & SKILL MAP</div><h2>Know what to learn before you apply.</h2><p>Explore the skill expectations stored for each company, compare core areas, and turn the gaps into a practical learning plan. These are database indicators, not guaranteed job requirements.</p></div><div className="skills-hero-mark"><BookOpen size={30}/><span>SKILL INTELLIGENCE</span></div></div>
           <div className="skills-stat-grid">
-            <div className="skills-stat"><span>COMPANY PROFILES</span><strong>{skillsLoading ? '—' : skillRecords.length}</strong><small>Skill records returned by Supabase</small></div>
+            <div className="skills-stat"><span>SKILL RECORDS</span><strong>{skillsLoading ? '—' : skillRecords.length}</strong><small>{skillsLoading ? 'Loading records' : `${uniqueSkillCompanyCount} unique company names${duplicateSkillRecordCount ? ` · ${duplicateSkillRecordCount} duplicate-name record${duplicateSkillRecordCount === 1 ? '' : 's'} retained` : ''}`}</small></div>
             <div className="skills-stat"><span>SKILL AREAS</span><strong>12</strong><small>Coding, DSA, OOP, SQL and more</small></div>
-            <div className="skills-stat"><span>DATA SOURCE</span><strong className="skills-source">Supabase</strong><small>staging_company_skill_levels</small></div>
+            <div className="skills-stat"><span>DATA SOURCE</span><strong className="skills-source">Supabase</strong><small>company_skill_profiles_public</small></div>
           </div>
           <div className="panel skills-explorer">
             <div className="panel-header"><div><h2>Company skill explorer</h2><p>Select a company to inspect its recorded skill levels.</p></div><button className="button secondary compact" onClick={() => void refreshSkills()}><RefreshCw size={14}/> Refresh</button></div>
-            <div className="table-tools skills-tools"><label className="search-box"><Search size={17}/><input value={skillsSearch} onChange={e => setSkillsSearch(e.target.value)} placeholder="Search companies or skills…"/></label><label className="select-box skills-company-select"><Building2 size={15}/><select aria-label="Select company for skill profile" value={selectedSkillCompany} onChange={e => setSelectedSkillCompany(e.target.value)} disabled={skillsLoading || Boolean(skillsError) || visibleSkillRecords.length === 0}><option value="" disabled>{skillsLoading ? 'Loading companies…' : 'Choose a company'}</option>{visibleSkillRecords.map(r => <option key={r.id} value={String(r.id)}>{r.companies || 'Unnamed company'}</option>)}</select></label></div>
+            <div className="table-tools skills-tools"><label className="search-box"><Search size={17}/><input value={skillsSearch} onChange={e => setSkillsSearch(e.target.value)} placeholder="Search companies or skills…"/></label><label className="select-box skills-company-select"><Building2 size={15}/><select aria-label="Select company for skill profile" value={selectedSkillCompany} onChange={e => setSelectedSkillCompany(e.target.value)} disabled={skillsLoading || Boolean(skillsError) || visibleSkillRecords.length === 0}><option value="" disabled>{skillsLoading ? 'Loading companies…' : 'Choose a company'}</option>{visibleSkillRecords.map(r => <option key={r.id} value={String(r.id)}>{r.companies || 'Unnamed company'}{(skillNameCounts.get(r.companies.trim()) || 0) > 1 ? ` · record #${r.id}` : ''}</option>)}</select></label></div>
             {skillsLoading && <div className="skills-empty"><LoaderCircle className="spin" size={22}/><strong>Loading skill intelligence</strong><p>Reading company skill records from Supabase.</p></div>}
             {!skillsLoading && skillsError && <div className="skills-empty"><CircleAlert size={24}/><strong>Could not load skill records</strong><p>{skillsError}</p><button className="button secondary compact" onClick={() => void refreshSkills()}>Try again</button></div>}
-            {!skillsLoading && !skillsError && skillRecords.length === 0 && <div className="skills-empty"><BrainCircuit size={24}/><strong>No skill profiles available</strong><p>Check that the connected Supabase project contains the staging_company_skill_levels table and permits read access.</p></div>}
+            {!skillsLoading && !skillsError && skillRecords.length === 0 && <div className="skills-empty"><BrainCircuit size={24}/><strong>No skill profiles available</strong><p>Check that the connected Supabase project contains the company_skill_profiles_public view and permits read access.</p></div>}
             {!skillsLoading && !skillsError && skillRecords.length > 0 && (() => {
               const filtered = visibleSkillRecords;
               const chosen = filtered.find(r => String(r.id) === selectedSkillCompany) || filtered[0];
               const skillFields: [string, keyof CompanySkillRecord][] = [['Coding','coding'],['Data Structures & Algorithms','data_structures_and_algorithms'],['OOP & Design','object_oriented_programming_and_design'],['Aptitude & Problem Solving','aptitude_and_problem_solving'],['Communication','communication_skills'],['AI-native Engineering','ai_native_engineering'],['DevOps & Cloud','devops_and_cloud'],['SQL & Database Design','sql_and_design'],['Software Engineering','software_engineering'],['System Design','system_design_and_architecture'],['Computer Networking','computer_networking'],['Operating Systems','operating_system']];
-              const parseLevel = (value: unknown) => { const m = String(value ?? '').match(/\d+/); return m ? Math.max(0,Math.min(10,Number(m[0]))) : 0; };
               const valueFor = (r: CompanySkillRecord, key: keyof CompanySkillRecord) => String(r[key] ?? 'Not specified');
               return <div className="skills-content">
                 <div className="skills-selected-head"><div className="skills-company-mark">{chosen.companies.slice(0,1).toUpperCase()}</div><div><span>SELECTED COMPANY</span><h3>{chosen.companies}</h3><p>Recorded skill indicators from the connected database</p></div><span className="skills-count">{filtered.length} profiles match</span></div>
-                <div className="skills-grid">{skillFields.map(([label,key]) => { const raw = valueFor(chosen,key); const level = parseLevel(raw); const has = raw !== 'Not specified' && raw !== ''; return <div className="skill-card" key={key}><div className="skill-card-top"><span>{label}</span><strong>{has ? raw : 'Not specified'}</strong></div><div className="skill-meter"><span style={{width: has ? (level*10)+'%' : '0%'}}/></div><small>{has ? 'Stored numeric indicator · scale not specified' : 'No rating recorded'}</small></div>})}</div>
+                <div className="skills-grid">{skillFields.map(([label,key]) => { const raw = valueFor(chosen,key); const has = raw !== 'Not specified' && raw !== ''; return <div className="skill-card" key={key}><div className="skill-card-top"><span>{label}</span><strong>{has ? raw : 'Not specified'}</strong></div><p className="skill-source-note">{has ? 'Source value shown as stored. Rating scale is not documented.' : 'No rating recorded in the source.'}</p></div>})}</div>
                 <div className="skills-plan"><div className="skills-plan-title"><div className="quick-symbol"><Target size={17}/></div><div><h3>How to use this profile</h3><p>Convert the recorded indicators into preparation steps.</p></div></div><div className="skills-plan-steps"><div><span>01</span><section><strong>Build core foundations</strong><p>Prioritise coding, DSA, OOP, aptitude and communication for broad placement readiness.</p></section></div><div><span>02</span><section><strong>Follow the role-specific stack</strong><p>Use SQL, cloud, AI or system design indicators to guide projects for your target role.</p></section></div><div><span>03</span><section><strong>Validate against job descriptions</strong><p>Confirm these database indicators against current official job postings; the scale is not a published company hiring rubric.</p></section></div></div></div>
               </div>;
             })()}
@@ -214,20 +251,20 @@ function App() {
           </div>
         </section>}
 
-        {activeNav !== 'Companies' && activeNav !== 'Research' && <section className="metrics-grid">
+        {activeNav !== 'Companies' && activeNav !== 'Research' && activeNav !== 'Placement tracker' && <section className="metrics-grid">
           <Metric label="Companies in database" value={loading ? '—' : companies.length.toLocaleString()} note={source ? `Loaded from ${source}` : 'Live database records'} icon={<Building2 size={19}/>} trend="database" />
           <Metric label="Industries represented" value={loading ? '—' : new Set(companies.map(c => c.industry).filter(v => v && v !== 'Not specified')).size.toString()} note="Distinct industry labels" icon={<Activity size={19}/>} trend="neutral" />
           <Metric label="Records with website" value={loading ? '—' : companies.filter(c => c.website).length.toLocaleString()} note="Company profiles with links" icon={<ExternalLink size={19}/>} trend="neutral" />
           <Metric label="Data connection" value={connection === 'connected' ? 'Healthy' : connection === 'checking' ? 'Checking' : connection === 'demo' ? 'Pending' : 'Needs review'} note={connection === 'connected' ? 'Supabase query succeeded' : 'Check URL, key and table access'} icon={<ShieldCheck size={19}/>} trend={connection === 'connected' ? 'good' : 'neutral'} />
         </section>}
 
-        <section className={`content-grid ${activeNav === 'Companies' ? 'companies-view' : ''}`} style={activeNav === 'Research' || activeNav === 'Data sources' || activeNav === 'Skills intelligence' ? { display: 'none' } : undefined}>
+        <section className={`content-grid ${activeNav === 'Companies' ? 'companies-view' : ''}`} style={activeNav === 'Research' || activeNav === 'Data sources' || activeNav === 'Skills intelligence' || activeNav === 'Placement tracker' ? { display: 'none' } : undefined}>
           {activeNav === 'Companies' && <div className="companies-intro"><div className="eyebrow"><Building2 size={14}/> PLACEMENT DIRECTORY</div><h2>All companies</h2><p>Search, filter, and open individual company profiles. Showing records loaded from your connected database.</p></div>}
           <div className="panel company-panel"><div className="panel-header"><div><h2>Company directory</h2><p>Browse the companies available to your placement team.</p></div><button className="button secondary compact" onClick={exportCsv} disabled={!visibleCompanies.length}><Download size={15}/> Export CSV</button></div>
             <div className="table-tools"><label className="search-box"><Search size={17}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search companies, sectors, locations…"/></label><label className="select-box"><Filter size={15}/><select value={industry} onChange={e => setIndustry(e.target.value)}>{industries.map(i => <option key={i}>{i}</option>)}</select></label></div>
             <div className="table-wrap"><table><thead><tr><th>COMPANY</th><th>INDUSTRY</th><th>LOCATION</th><th>PROFILE</th></tr></thead><tbody>
               {loading && <tr><td colSpan={4} className="empty-cell"><LoaderCircle className="spin" size={22}/> Loading company records…</td></tr>}
-              {!loading && visibleCompanies.map((c, i) => <tr key={`${c.id}-${i}`} onClick={() => setSelected(c)} className="company-row"><td><div className="company-name-cell"><div className={`company-logo logo-${i % 6}`}>{c.name.slice(0, 1).toUpperCase()}</div><div><strong>{c.name}</strong><span>ID · {c.id}</span></div></div></td><td><span className="industry-tag">{c.industry || 'Not specified'}</span></td><td><span className="location-cell"><MapPin size={13}/>{c.location || 'Not specified'}</span></td><td><button className="open-row" aria-label={`View ${c.name}`}><ExternalLink size={15}/></button></td></tr>)}
+              {!loading && visibleCompanies.map((c, i) => <tr key={`${c.id}-${i}`} onClick={() => setSelected(c)} onKeyDown={event => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); setSelected(c); } }} tabIndex={0} className="company-row"><td><div className="company-name-cell"><div className={`company-logo logo-${i % 6}`}>{c.name.slice(0, 1).toUpperCase()}</div><div><strong>{c.name}</strong><span>ID · {c.id}</span></div></div></td><td><span className="industry-tag">{c.industry || 'Not specified'}</span></td><td><span className="location-cell"><MapPin size={13}/>{c.location || 'Not specified'}</span></td><td><button className="open-row" aria-label={`View ${c.name}`} onClick={event => { event.stopPropagation(); setSelected(c); }}><ExternalLink size={15}/></button></td></tr>)}
               {!loading && visibleCompanies.length === 0 && <tr><td colSpan={4}><div className="empty-state"><div className="empty-illustration"><Building2 size={23}/></div><strong>{search || industry !== 'All industries' ? 'No matching companies' : 'No company records loaded yet'}</strong><p>{search || industry !== 'All industries' ? 'Try another search or clear the industry filter.' : 'Once the Supabase connection and table permissions are set, your records will appear here.'}</p>{!search && industry === 'All industries' && <button className="button primary small" onClick={() => setShowSetup(true)}>Check connection setup</button>}</div></td></tr>}
             </tbody></table></div><div className="table-footer"><span>Showing <strong>{visibleCompanies.length}</strong> of <strong>{companies.length}</strong> records</span><span>{source ? `Source table: ${source}` : 'Source: Supabase'}</span></div>
           </div>
@@ -235,7 +272,7 @@ function App() {
             <div className="panel quick-panel"><div className="quick-heading"><div className="quick-symbol"><Sparkles size={17}/></div><div><h2>Research workflow</h2><p>Make your company data useful.</p></div></div><div className="workflow-step"><div className="step-number">01</div><div><strong>Verify company profiles</strong><span>Check website, sector and location fields.</span></div></div><div className="workflow-step"><div className="step-number">02</div><div><strong>Find priority employers</strong><span>Search and filter the current company list.</span></div></div><div className="workflow-step"><div className="step-number">03</div><div><strong>Export a working list</strong><span>Download filtered records as CSV.</span></div></div><div className="quick-foot"><Check size={15}/> Built for real records, not hard-coded sample data.</div></div>
           </div>}
         </section>
-        <footer className="footer"><span>CampusIntel <span className="footer-dot">·</span> Placement Intelligence</span><span>Private workspace <span className="footer-dot">·</span> Supabase-backed</span></footer>
+        <footer className="footer"><span>CampusIntel <span className="footer-dot">·</span> Placement Intelligence</span><span>Public company data <span className="footer-dot">·</span> Tracker saved in this browser</span></footer>
       </div>
     </main>
 
