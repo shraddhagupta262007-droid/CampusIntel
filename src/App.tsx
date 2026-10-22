@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Activity, ArrowDownRight, ArrowUpRight, Building2, Check, CheckCircle2, ChevronDown, CircleHelp, Command, Database, Download, ExternalLink, FileSearch, Filter, Globe, GraduationCap, LayoutDashboard, LoaderCircle, MapPin, RefreshCw, Search, Settings2, ShieldCheck, Sparkles, Target, TrendingUp, Wifi, WifiOff, Table2, Server, KeyRound, CircleCheck, CircleAlert } from 'lucide-react';
-import { isSupabaseConfigured, loadCompanies, testConnection, type Company } from './lib/supabase';
+import { Activity, ArrowDownRight, ArrowUpRight, Building2, Check, CheckCircle2, ChevronDown, CircleHelp, Command, Database, Download, ExternalLink, FileSearch, Filter, Globe, GraduationCap, LayoutDashboard, LoaderCircle, MapPin, RefreshCw, Search, Settings2, ShieldCheck, Sparkles, Target, TrendingUp, Wifi, WifiOff, Table2, Server, KeyRound, CircleCheck, CircleAlert, BrainCircuit, BookOpen, Code2 } from 'lucide-react';
+import { isSupabaseConfigured, loadCompanies, loadCompanySkills, testConnection, type Company, type CompanySkillRecord } from './lib/supabase';
 
 const demoCompanies: Company[] = [
   { id: 1, name: 'Accenture', industry: 'IT Services & Consulting', location: 'Bengaluru, India', website: 'https://www.accenture.com', description: 'Technology services, consulting and digital transformation.' },
@@ -25,6 +25,11 @@ function App() {
   const [shortlist, setShortlist] = useState<string[]>([]);
   const [researchSearch, setResearchSearch] = useState('');
   const [researchIndustry, setResearchIndustry] = useState('All industries');
+  const [skillRecords, setSkillRecords] = useState<CompanySkillRecord[]>([]);
+  const [skillsLoading, setSkillsLoading] = useState(false);
+  const [skillsError, setSkillsError] = useState<string | null>(null);
+  const [skillsSearch, setSkillsSearch] = useState('');
+  const [selectedSkillCompany, setSelectedSkillCompany] = useState('');
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -43,6 +48,15 @@ function App() {
   }, []);
 
   useEffect(() => { void refresh(); }, [refresh]);
+
+  const refreshSkills = useCallback(async () => {
+    setSkillsLoading(true);
+    const result = await loadCompanySkills();
+    setSkillRecords(result.skills);
+    setSkillsError(result.error);
+    setSkillsLoading(false);
+  }, []);
+  useEffect(() => { if (activeNav === 'Skills intelligence') void refreshSkills(); }, [activeNav, refreshSkills]);
 
   const visibleCompanies = useMemo(() => companies.filter(c => {
     const term = search.toLowerCase().trim();
@@ -67,6 +81,7 @@ function App() {
       <button className={`nav-item ${activeNav === 'Companies' ? 'active' : ''}`} onClick={() => setActiveNav('Companies')}><Building2 size={18}/> Companies <span className="nav-count">{companies.length}</span></button>
       <button className={`nav-item ${activeNav === 'Research' ? 'active' : ''}`} onClick={() => setActiveNav('Research')}><FileSearch size={18}/> Research desk</button>
       <button className={`nav-item ${activeNav === 'Data sources' ? 'active' : ''}`} onClick={() => setActiveNav('Data sources')}><Database size={18}/> Data sources</button>
+      <button className={`nav-item ${activeNav === 'Skills intelligence' ? 'active' : ''}`} onClick={() => setActiveNav('Skills intelligence')}><BrainCircuit size={18}/> Skills intelligence</button>
       <div className="sidebar-bottom"><div className="campus-card"><div className="campus-icon"><GraduationCap size={19}/></div><div><strong>JSS University</strong><span>Placement cell workspace</span></div><ChevronDown size={15}/></div><button className="nav-item" onClick={() => setShowSetup(true)}><Settings2 size={18}/> Setup & connection</button><div className="user-row"><div className="avatar">JI</div><div><strong>Placement Intelligence</strong><span>Student workspace</span></div><CircleHelp size={17}/></div></div>
     </aside>
 
@@ -106,6 +121,34 @@ function App() {
             <div><span className={connection === 'connected' ? 'check-done' : 'check-pending'}>{connection === 'connected' ? <Check size={13}/> : '2'}</span><section><strong>Read query succeeds</strong><p>{connection === 'connected' ? 'A company query returned successfully.' : 'Check the configured table/view and SELECT permissions or Row Level Security policy.'}</p></section></div>
             <div><span className={companies.length ? 'check-done' : 'check-pending'}>{companies.length ? <Check size={13}/> : '3'}</span><section><strong>Company rows available</strong><p>{companies.length ? 'Company rows are available to the app.' : 'Confirm the source contains records and the query points to the intended table.'}</p></section></div>
           </div><div className="source-panel-actions"><button className="button secondary" onClick={() => setActiveNav('Companies')}><Building2 size={15}/> Open company directory</button><button className="button primary" onClick={() => setShowSetup(true)}><Settings2 size={15}/> View setup guide</button></div></div>
+        </section>}
+
+        {activeNav === 'Skills intelligence' && <section className="skills-desk">
+          <div className="skills-hero"><div className="skills-hero-copy"><div className="eyebrow"><BrainCircuit size={14}/> ROLE READINESS & SKILL MAP</div><h2>Know what to learn before you apply.</h2><p>Explore the skill expectations stored for each company, compare core areas, and turn the gaps into a practical learning plan. These are database indicators, not guaranteed job requirements.</p></div><div className="skills-hero-mark"><BookOpen size={30}/><span>SKILL INTELLIGENCE</span></div></div>
+          <div className="skills-stat-grid">
+            <div className="skills-stat"><span>COMPANY PROFILES</span><strong>{skillsLoading ? '—' : skillRecords.length}</strong><small>Skill records returned by Supabase</small></div>
+            <div className="skills-stat"><span>SKILL AREAS</span><strong>12</strong><small>Coding, DSA, OOP, SQL and more</small></div>
+            <div className="skills-stat"><span>DATA SOURCE</span><strong className="skills-source">Supabase</strong><small>staging_company_skill_levels</small></div>
+          </div>
+          <div className="panel skills-explorer">
+            <div className="panel-header"><div><h2>Company skill explorer</h2><p>Select a company to inspect its recorded skill levels.</p></div><button className="button secondary compact" onClick={() => void refreshSkills()}><RefreshCw size={14}/> Refresh</button></div>
+            <div className="table-tools skills-tools"><label className="search-box"><Search size={17}/><input value={skillsSearch} onChange={e => setSkillsSearch(e.target.value)} placeholder="Search companies or skills…"/></label><label className="select-box"><Building2 size={15}/><select value={selectedSkillCompany} onChange={e => setSelectedSkillCompany(e.target.value)}><option value="">Select a company</option>{skillRecords.filter(r => !skillsSearch || [r.companies,r.coding,r.data_structures_and_algorithms,r.ai_native_engineering,r.sql_and_design].some(v => String(v ?? '').toLowerCase().includes(skillsSearch.toLowerCase()))).map(r => <option key={r.id} value={String(r.id)}>{r.companies}</option>)}</select></label></div>
+            {skillsLoading && <div className="skills-empty"><LoaderCircle className="spin" size={22}/><strong>Loading skill intelligence</strong><p>Reading company skill records from Supabase.</p></div>}
+            {!skillsLoading && skillsError && <div className="skills-empty"><CircleAlert size={24}/><strong>Could not load skill records</strong><p>{skillsError}</p><button className="button secondary compact" onClick={() => void refreshSkills()}>Try again</button></div>}
+            {!skillsLoading && !skillsError && skillRecords.length === 0 && <div className="skills-empty"><BrainCircuit size={24}/><strong>No skill profiles available</strong><p>Check that the connected Supabase project contains the staging_company_skill_levels table and permits read access.</p></div>}
+            {!skillsLoading && !skillsError && skillRecords.length > 0 && (() => {
+              const filtered = skillRecords.filter(r => !skillsSearch || [r.companies,r.coding,r.data_structures_and_algorithms,r.object_oriented_programming_and_design,r.aptitude_and_problem_solving,r.communication_skills,r.ai_native_engineering,r.devops_and_cloud,r.sql_and_design,r.software_engineering,r.system_design_and_architecture,r.computer_networking,r.operating_system].some(v => String(v ?? '').toLowerCase().includes(skillsSearch.toLowerCase())));
+              const chosen = filtered.find(r => String(r.id) === selectedSkillCompany) || filtered[0];
+              const skillFields: [string, keyof CompanySkillRecord][] = [['Coding','coding'],['Data Structures & Algorithms','data_structures_and_algorithms'],['OOP & Design','object_oriented_programming_and_design'],['Aptitude & Problem Solving','aptitude_and_problem_solving'],['Communication','communication_skills'],['AI-native Engineering','ai_native_engineering'],['DevOps & Cloud','devops_and_cloud'],['SQL & Database Design','sql_and_design'],['Software Engineering','software_engineering'],['System Design','system_design_and_architecture'],['Computer Networking','computer_networking'],['Operating Systems','operating_system']];
+              const parseLevel = (value: unknown) => { const m = String(value ?? '').match(/\d+/); return m ? Math.max(0,Math.min(10,Number(m[0]))) : 0; };
+              const valueFor = (r: CompanySkillRecord, key: keyof CompanySkillRecord) => String(r[key] ?? 'Not specified');
+              return <div className="skills-content">
+                <div className="skills-selected-head"><div className="skills-company-mark">{chosen.companies.slice(0,1).toUpperCase()}</div><div><span>SELECTED COMPANY</span><h3>{chosen.companies}</h3><p>Recorded skill indicators from the connected database</p></div><span className="skills-count">{filtered.length} profiles match</span></div>
+                <div className="skills-grid">{skillFields.map(([label,key]) => { const raw = valueFor(chosen,key); const level = parseLevel(raw); const has = raw !== 'Not specified' && raw !== ''; return <div className="skill-card" key={key}><div className="skill-card-top"><span>{label}</span><strong>{has ? raw : 'Not specified'}</strong></div><div className="skill-meter"><span style={{width: has ? (level*10)+'%' : '0%'}}/></div><small>{has ? 'Database rating indicator · ' + level + '/10 scale' : 'No rating recorded'}</small></div>})}</div>
+                <div className="skills-plan"><div className="skills-plan-title"><div className="quick-symbol"><Target size={17}/></div><div><h3>How to use this profile</h3><p>Convert the recorded indicators into preparation steps.</p></div></div><div className="skills-plan-steps"><div><span>01</span><section><strong>Build core foundations</strong><p>Prioritise coding, DSA, OOP, aptitude and communication for broad placement readiness.</p></section></div><div><span>02</span><section><strong>Follow the role-specific stack</strong><p>Use SQL, cloud, AI or system design indicators to guide projects for your target role.</p></section></div><div><span>03</span><section><strong>Validate against job descriptions</strong><p>Confirm these database indicators against current official job postings; the scale is not a published company hiring rubric.</p></section></div></div></div>
+              </div>;
+            })()}
+          </div>
         </section>}
         {activeNav === 'Research' && <section className="research-desk">
           <div className="research-hero">
@@ -148,7 +191,7 @@ function App() {
           <Metric label="Data connection" value={connection === 'connected' ? 'Healthy' : connection === 'checking' ? 'Checking' : connection === 'demo' ? 'Pending' : 'Needs review'} note={connection === 'connected' ? 'Supabase query succeeded' : 'Check URL, key and table access'} icon={<ShieldCheck size={19}/>} trend={connection === 'connected' ? 'good' : 'neutral'} />
         </section>}
 
-        <section className={`content-grid ${activeNav === 'Companies' ? 'companies-view' : ''}`} style={activeNav === 'Research' || activeNav === 'Data sources' ? { display: 'none' } : undefined}>
+        <section className={`content-grid ${activeNav === 'Companies' ? 'companies-view' : ''}`} style={activeNav === 'Research' || activeNav === 'Data sources' || activeNav === 'Skills intelligence' ? { display: 'none' } : undefined}>
           {activeNav === 'Companies' && <div className="companies-intro"><div className="eyebrow"><Building2 size={14}/> PLACEMENT DIRECTORY</div><h2>All companies</h2><p>Search, filter, and open individual company profiles. Showing records loaded from your connected database.</p></div>}
           <div className="panel company-panel"><div className="panel-header"><div><h2>Company directory</h2><p>Browse the companies available to your placement team.</p></div><button className="button secondary compact" onClick={exportCsv} disabled={!visibleCompanies.length}><Download size={15}/> Export CSV</button></div>
             <div className="table-tools"><label className="search-box"><Search size={17}/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search companies, sectors, locations…"/></label><label className="select-box"><Filter size={15}/><select value={industry} onChange={e => setIndustry(e.target.value)}>{industries.map(i => <option key={i}>{i}</option>)}</select></label></div>
