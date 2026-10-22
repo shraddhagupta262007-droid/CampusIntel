@@ -51,18 +51,42 @@ function App() {
 
   const refreshSkills = useCallback(async () => {
     setSkillsLoading(true);
-    const result = await loadCompanySkills();
-    setSkillRecords(result.skills);
-    setSkillsError(result.error);
-    setSkillsLoading(false);
+    setSkillsError(null);
+    try {
+      const result = await loadCompanySkills();
+      setSkillRecords(result.skills);
+      setSkillsError(result.error);
+    } catch (error) {
+      setSkillRecords([]);
+      setSkillsError(error instanceof Error ? error.message : 'Unable to load company skill records.');
+    } finally {
+      setSkillsLoading(false);
+    }
   }, []);
   useEffect(() => { if (activeNav === 'Skills intelligence') void refreshSkills(); }, [activeNav, refreshSkills]);
+
+  const visibleSkillRecords = useMemo(() => {
+    const term = skillsSearch.trim().toLowerCase();
+    if (!term) return skillRecords;
+    return skillRecords.filter(record =>
+      [record.companies, record.coding, record.data_structures_and_algorithms,
+       record.object_oriented_programming_and_design, record.aptitude_and_problem_solving,
+       record.communication_skills, record.ai_native_engineering, record.devops_and_cloud,
+       record.sql_and_design, record.software_engineering, record.system_design_and_architecture,
+       record.computer_networking, record.operating_system]
+        .some(value => String(value ?? '').toLowerCase().includes(term))
+    );
+  }, [skillRecords, skillsSearch]);
+
   useEffect(() => {
-    if (!skillRecords.length) { setSelectedSkillCompany(''); return; }
-    if (!selectedSkillCompany || !skillRecords.some(record => String(record.id) === selectedSkillCompany)) {
-      setSelectedSkillCompany(String(skillRecords[0].id));
+    if (visibleSkillRecords.length === 0) {
+      if (selectedSkillCompany !== '') setSelectedSkillCompany('');
+      return;
     }
-  }, [skillRecords, selectedSkillCompany]);
+    if (!visibleSkillRecords.some(record => String(record.id) === selectedSkillCompany)) {
+      setSelectedSkillCompany(String(visibleSkillRecords[0].id));
+    }
+  }, [visibleSkillRecords, selectedSkillCompany]);
 
   const visibleCompanies = useMemo(() => companies.filter(c => {
     const term = search.toLowerCase().trim();
@@ -138,12 +162,12 @@ function App() {
           </div>
           <div className="panel skills-explorer">
             <div className="panel-header"><div><h2>Company skill explorer</h2><p>Select a company to inspect its recorded skill levels.</p></div><button className="button secondary compact" onClick={() => void refreshSkills()}><RefreshCw size={14}/> Refresh</button></div>
-            <div className="table-tools skills-tools"><label className="search-box"><Search size={17}/><input value={skillsSearch} onChange={e => setSkillsSearch(e.target.value)} placeholder="Search companies or skills…"/></label><label className="select-box skills-company-select"><Building2 size={15}/><select aria-label="Select company for skill profile" value={selectedSkillCompany} onChange={e => setSelectedSkillCompany(e.target.value)} disabled={skillsLoading || Boolean(skillsError) || skillRecords.length === 0}><option value="" disabled>{skillsLoading ? 'Loading companies…' : 'Choose a company'}</option>{skillRecords.filter(r => !skillsSearch.trim() || [r.companies,r.coding,r.data_structures_and_algorithms,r.object_oriented_programming_and_design,r.aptitude_and_problem_solving,r.communication_skills,r.ai_native_engineering,r.devops_and_cloud,r.sql_and_design,r.software_engineering,r.system_design_and_architecture,r.computer_networking,r.operating_system].some(v => String(v ?? '').toLowerCase().includes(skillsSearch.trim().toLowerCase()))).map(r => <option key={r.id} value={String(r.id)}>{r.companies || 'Unnamed company'}</option>)}</select></label></div>
+            <div className="table-tools skills-tools"><label className="search-box"><Search size={17}/><input value={skillsSearch} onChange={e => setSkillsSearch(e.target.value)} placeholder="Search companies or skills…"/></label><label className="select-box skills-company-select"><Building2 size={15}/><select aria-label="Select company for skill profile" value={selectedSkillCompany} onChange={e => setSelectedSkillCompany(e.target.value)} disabled={skillsLoading || Boolean(skillsError) || visibleSkillRecords.length === 0}><option value="" disabled>{skillsLoading ? 'Loading companies…' : 'Choose a company'}</option>{visibleSkillRecords.map(r => <option key={r.id} value={String(r.id)}>{r.companies || 'Unnamed company'}</option>)}</select></label></div>
             {skillsLoading && <div className="skills-empty"><LoaderCircle className="spin" size={22}/><strong>Loading skill intelligence</strong><p>Reading company skill records from Supabase.</p></div>}
             {!skillsLoading && skillsError && <div className="skills-empty"><CircleAlert size={24}/><strong>Could not load skill records</strong><p>{skillsError}</p><button className="button secondary compact" onClick={() => void refreshSkills()}>Try again</button></div>}
             {!skillsLoading && !skillsError && skillRecords.length === 0 && <div className="skills-empty"><BrainCircuit size={24}/><strong>No skill profiles available</strong><p>Check that the connected Supabase project contains the staging_company_skill_levels table and permits read access.</p></div>}
             {!skillsLoading && !skillsError && skillRecords.length > 0 && (() => {
-              const filtered = skillRecords.filter(r => !skillsSearch || [r.companies,r.coding,r.data_structures_and_algorithms,r.object_oriented_programming_and_design,r.aptitude_and_problem_solving,r.communication_skills,r.ai_native_engineering,r.devops_and_cloud,r.sql_and_design,r.software_engineering,r.system_design_and_architecture,r.computer_networking,r.operating_system].some(v => String(v ?? '').toLowerCase().includes(skillsSearch.toLowerCase())));
+              const filtered = visibleSkillRecords;
               const chosen = filtered.find(r => String(r.id) === selectedSkillCompany) || filtered[0];
               const skillFields: [string, keyof CompanySkillRecord][] = [['Coding','coding'],['Data Structures & Algorithms','data_structures_and_algorithms'],['OOP & Design','object_oriented_programming_and_design'],['Aptitude & Problem Solving','aptitude_and_problem_solving'],['Communication','communication_skills'],['AI-native Engineering','ai_native_engineering'],['DevOps & Cloud','devops_and_cloud'],['SQL & Database Design','sql_and_design'],['Software Engineering','software_engineering'],['System Design','system_design_and_architecture'],['Computer Networking','computer_networking'],['Operating Systems','operating_system']];
               const parseLevel = (value: unknown) => { const m = String(value ?? '').match(/\d+/); return m ? Math.max(0,Math.min(10,Number(m[0]))) : 0; };
