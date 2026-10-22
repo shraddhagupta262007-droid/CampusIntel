@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CampusIntel">
-  <rect width="64" height="64" fill="#c9f31d"/>
-  <path d="M8 24.5 32 12l24 12.5L32 37 8 24.5Z" fill="#171914"/>
-  <path d="M18.5 30.2v10.1c7.8 6.8 19.2 6.8 27 0V30.2L32 37.2 18.5 30.2Z" fill="#171914"/>
-  <path d="M55.7 25v13.8" fill="none" stroke="#171914" stroke-width="3" stroke-linecap="square"/>
-  <circle cx="55.7" cy="41.7" r="3" fill="#171914"/>
+  <rect width="64" height="64" fill="#142b3d"/>
+  <path d="M8 24.5 32 12l24 12.5L32 37 8 24.5Z" fill="#83d1c3"/>
+  <path d="M18.5 30.2v10.1c7.8 6.8 19.2 6.8 27 0V30.2L32 37.2 18.5 30.2Z" fill="#83d1c3"/>
+  <path d="M55.7 25v13.8" fill="none" stroke="#83d1c3" stroke-width="3" stroke-linecap="square"/>
+  <circle cx="55.7" cy="41.7" r="3" fill="#83d1c3"/>
 </svg>
